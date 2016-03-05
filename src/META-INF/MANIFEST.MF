@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: com.dankeroni.dankbot.Bot
+Main-Class: com.dankeroni.dankbot.DankBot
 
