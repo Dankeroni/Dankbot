@@ -1,4 +1,4 @@
-Danknbot is an irc-bot which moderates channels on twitch.tv.
+Dankbot is an irc-bot which moderates channels on twitch.tv.
 
 Requirements: Java
 
