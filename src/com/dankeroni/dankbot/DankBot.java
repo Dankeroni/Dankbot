@@ -3,10 +3,10 @@ package com.dankeroni.dankbot;
 import java.io.FileReader;
 import java.util.Properties;
 
-public class Bot {
+public class DankBot{
 
-    public static void main(String[] args) {
-        try(FileReader reader = new FileReader("config.properties")) {
+    public static void main(String[] args){
+        try(FileReader reader = new FileReader("config.properties")){
             Properties properties = new Properties();
             properties.load(reader);
             String botName = properties.getProperty("botname");
@@ -24,8 +24,8 @@ public class Bot {
             System.out.println("Botname: " + botName);
             System.out.println("Channel: " + channel.substring(1));
             System.out.println("Admin: " + admin);
-            new Bot(botName, oauth, admin, channel, silentJoinLeave, superCommands, logOutput);
-        } catch(Exception e) {
+            new DankBot(botName, oauth, admin, channel, silentJoinLeave, superCommands, logOutput);
+        } catch(Exception e){
             System.out.println("Please fix your config file!");
             e.printStackTrace();
         }
@@ -34,7 +34,7 @@ public class Bot {
     public String botName, oauth, admin, channel;
     public boolean silentJoinLeave, superCommands, logOutput;
 
-    public Bot(String botName, String oauth, String admin, String channel, boolean silentJoinLeave, boolean superCommands, boolean logOutput) {
+    public DankBot(String botName, String oauth, String admin, String channel, boolean silentJoinLeave, boolean superCommands, boolean logOutput){
         this.botName = botName;
         this.oauth = oauth;
         this.admin = admin;
@@ -45,7 +45,7 @@ public class Bot {
         this.start();
     }
 
-    private void start() {
+    private void start(){
 
     }
 
