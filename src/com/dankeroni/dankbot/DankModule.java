@@ -34,4 +34,8 @@ public class DankModule{
     protected void onChannelCommand(String message, String sender){}
 
     protected void onWhisperCommand(String message, String sender){}
+
+    public String getCommand() {
+        return command;
+    }
 }

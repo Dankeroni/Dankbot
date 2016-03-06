@@ -1,6 +1,7 @@
 package com.dankeroni.dankbot;
 
-import com.dankeroni.dankbot.modules.ModuleAdder;
+import com.dankeroni.dankbot.modules.CommandAdder;
+import com.dankeroni.dankbot.modules.CommandRemover;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
@@ -71,7 +72,8 @@ public class DankChannelBot extends PircBot{
 
         dankHandler = new DankHandler();
         dankWhisperBot = new DankWhisperBot(this, botName, oauth, admin, channel, superCommands, logOutput, dankHandler);
-        dankHandler.addModule(new ModuleAdder(this, dankWhisperBot, "!addmodule", 0, 0));
+        dankHandler.addModule(new CommandAdder(this, dankWhisperBot, "!addcommand", 0, 0));
+        dankHandler.addModule(new CommandRemover(this, dankWhisperBot, "!removecommand", 0 ,0));
     }
 
     public void channelMessage(String message){
@@ -88,5 +90,9 @@ public class DankChannelBot extends PircBot{
 
     public long getTimeStarted(){
         return timeStarted;
+    }
+
+    public String getAdmin() {
+        return admin;
     }
 }

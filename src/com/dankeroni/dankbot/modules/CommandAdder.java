@@ -5,13 +5,14 @@ import com.dankeroni.dankbot.DankModule;
 import com.dankeroni.dankbot.DankUtils;
 import com.dankeroni.dankbot.DankWhisperBot;
 
-public class ModuleAdder extends DankModule{
+public class CommandAdder extends DankModule{
 
-    public ModuleAdder(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
+    public CommandAdder(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
         super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
     }
 
     protected void onChannelCommand(String message, String sender){
+        if(!sender.equalsIgnoreCase(dankChannelBot.getAdmin()))return;
         String [] words = DankUtils.splitString(message);
         dankChannelBot.getDankHandler().addModule(buildModule(words));
     }

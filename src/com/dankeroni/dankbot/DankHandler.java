@@ -7,10 +7,8 @@ public class DankHandler {
     public LinkedList<DankModule> dankModules = new LinkedList<>();
 
     public void checkChannelMessage(String message, String sender){
-        checkChannelMessage:{
-            for(DankModule dankModule : dankModules){
-                if(dankModule.checkChannelMessage(message, sender))break;
-            }
+        for(DankModule dankModule : dankModules){
+            if(dankModule.checkChannelMessage(message, sender))break;
         }
     }
 
@@ -26,5 +24,9 @@ public class DankHandler {
 
     public void removeModule(DankModule dankModule){
         dankModules.remove(dankModule);
+    }
+
+    public LinkedList<DankModule> getDankModules() {
+        return dankModules;
     }
 }

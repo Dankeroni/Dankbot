@@ -12,7 +12,7 @@ public class BotUpTime extends DankModule{
         super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
     }
 
-    public void onChannelCommand(String  message, String sender){
+    protected void onChannelCommand(String  message, String sender){
         dankChannelBot.channelMessage("The bot has been up for: " + getBotUpTime());
     }
 
