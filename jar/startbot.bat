@@ -1,3 +1,3 @@
 @echo off
-java -jar bot.jar
+java -jar Dankbot.jar
 pause

@@ -1,3 +1,3 @@
 #!/bin/bash
-java -jar bot.jar
+java -jar Dankbot.jar
 read -p "Press any key to exit..."
