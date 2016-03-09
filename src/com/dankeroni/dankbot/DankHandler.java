@@ -8,13 +8,19 @@ public class DankHandler {
 
     public void checkChannelMessage(String message, String sender){
         for(DankModule dankModule : dankModules){
-            if(dankModule.checkChannelMessage(message, sender))break;
+            if(message.toLowerCase().startsWith(dankModule.getCommand())) {
+                dankModule.onChannelCommand(message, sender);
+                break;
+            }
         }
     }
 
     public void checkWhisperMessage(String message, String sender){
         for(DankModule dankModule : dankModules){
-            if(dankModule.checkWhisperMessage(message, sender))break;
+            if(message.toLowerCase().startsWith(dankModule.getCommand())){
+                dankModule.onWhisperCommand(message, sender);
+                break;
+            }
         }
     }
 
