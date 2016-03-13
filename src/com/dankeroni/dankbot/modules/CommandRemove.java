@@ -5,9 +5,9 @@ import com.dankeroni.dankbot.DankModule;
 import com.dankeroni.dankbot.DankUtils;
 import com.dankeroni.dankbot.DankWhisperBot;
 
-public class CommandRemover extends DankModule{
+public class CommandRemove extends DankModule{
 
-    public CommandRemover(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
+    public CommandRemove(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
         super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
     }
 

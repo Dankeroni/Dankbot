@@ -5,9 +5,9 @@ import com.dankeroni.dankbot.DankModule;
 import com.dankeroni.dankbot.DankUtils;
 import com.dankeroni.dankbot.DankWhisperBot;
 
-public class CommandAdder extends DankModule{
+public class CommandAdd extends DankModule{
 
-    public CommandAdder(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
+    public CommandAdd(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
         super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
     }
 
@@ -18,13 +18,19 @@ public class CommandAdder extends DankModule{
     }
 
     private DankModule buildModule(String[] words){
-        String command = ("!" + words[1]).toLowerCase();
+        String commandToUse = words[1].toLowerCase();
+        if(!commandToUse.startsWith("!"))
+            commandToUse = "!".concat(commandToUse);
         String moduleName = words[2].toLowerCase();
         int globalCooldown = Integer.parseInt(words[3]);
         int userCooldown = Integer.parseInt(words[4]);
         switch(moduleName){
             case "botuptime":
-                return new BotUpTime(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
+                return new BotUpTime(dankChannelBot, dankWhisperBot, commandToUse, globalCooldown, userCooldown);
+            case "vanish":
+                return new Vanish(dankChannelBot, dankWhisperBot, commandToUse, globalCooldown, userCooldown);
+            case "time":
+                return new Time(dankChannelBot, dankWhisperBot, commandToUse, globalCooldown, userCooldown);
         }
         return null;
     }
