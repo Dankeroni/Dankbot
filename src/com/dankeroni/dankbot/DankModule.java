@@ -1,5 +1,7 @@
 package com.dankeroni.dankbot;
 
+import java.util.HashMap;
+
 public abstract class DankModule{
 
     protected DankChannelBot dankChannelBot;
@@ -15,9 +17,9 @@ public abstract class DankModule{
         this.userCooldown = userCooldown;
     }
 
-    protected void onChannelCommand(String message, String sender){}
+    protected void onChannelCommand(String message, String sender, HashMap<String, String> tags){}
 
-    protected void onWhisperCommand(String message, String sender){}
+    protected void onWhisperCommand(String message, String sender, HashMap<String, String> tags){}
 
     public String getCommand() {
         return command;

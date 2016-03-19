@@ -4,12 +4,13 @@ import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class DankWhisperBot extends PircBot{
 
     private DankChannelBot dankChannelBot;
     private String botName, oauth, admin, channel;
-    private boolean superCommand, logOutput;
+    private boolean superCommand, logOutput, running = false;
     private DankHandler dankHandler;
 
     public DankWhisperBot(DankChannelBot dankChannelBot, String botName, String oauth, String admin, String channel, boolean superCommands, boolean logOutput, DankHandler dankHandler){
@@ -25,15 +26,21 @@ public class DankWhisperBot extends PircBot{
     }
 
     private void start(){
+        if(running)
+            return;
+
+        running = true;
         setName(botName);
         setVerbose(logOutput);
+
         try{
-            connect("199.9.253.58", 443, oauth);
+            connect("192.16.64.180", 443, oauth);
         }catch(IOException | IrcException e){
             System.out.println("Twitch whisper servers offline/Check your internet connection/firewall");
             e.printStackTrace();
             return;
         }
+
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
     }
 
@@ -41,7 +48,7 @@ public class DankWhisperBot extends PircBot{
         sendMessage("#dankeroni", String.format(".w %s %s", user, message));
     }
 
-    public void onWhisper(String sender, String login, String hostname, String message){
-      dankHandler.checkWhisperMessage(message, sender);
+    public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags){
+        dankHandler.checkWhisperMessage(message, sender, tags);
    }
 }

@@ -6,61 +6,70 @@ import com.dankeroni.dankbot.modules.Stop;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.Properties;
+import java.util.HashMap;
 
 public class DankChannelBot extends PircBot{
 
     public static void main(String[] args){
-        try(FileReader reader = new FileReader("config.properties")){
-            Properties properties = new Properties();
-            properties.load(reader);
-            String botName = properties.getProperty("botname");
-            String oauth = properties.getProperty("oauth");
-            String admin = properties.getProperty("admin");
-            String channel = "#" + properties.getProperty("channel");
-            boolean silentJoinLeave = Boolean.parseBoolean(properties.getProperty("silentJoinLeave"));
-            boolean superCommands = Boolean.parseBoolean(properties.getProperty("superCommands"));
-            boolean logOutput = Boolean.parseBoolean(properties.getProperty("logOutput"));
-            if(botName.isEmpty() || oauth.isEmpty() || admin.isEmpty() || channel.isEmpty() || properties.getProperty("silentJoinLeave").isEmpty() || properties.getProperty("superCommands").isEmpty() || properties.getProperty("logOutput").isEmpty()) {
-                System.out.println("Please fill in the config file!");
-                return;
-            }
-            System.out.println("Dankbot starting!");
-            System.out.println("Botname: " + botName);
-            System.out.println("Channel: " + channel.substring(1));
-            System.out.println("Admin: " + admin);
-            new DankChannelBot(botName, oauth, admin, channel, silentJoinLeave, superCommands, logOutput);
-        } catch(Exception e){
-            System.out.println("Please fix your config file!");
-            e.printStackTrace();
+        if(args.length == 0) {
+            new DankChannelBot("config.properties");
+        } else {
+            for(String configFile: args)
+                new DankChannelBot(configFile);
         }
+
+
+
     }
 
     private long timeStarted = System.currentTimeMillis();
-    private String botName, oauth, admin, channel;
+    private String botName, oauth, admin, channel, configFile;
+    private String[] trustedUsers;
     private boolean silentJoinLeave, superCommands, logOutput, running = false;
     private DankHandler dankHandler;
     private DankWhisperBot dankWhisperBot;
+    private DankConfig dankConfig;
 
-    public DankChannelBot(String botName, String oauth, String admin, String channel, boolean silentJoinLeave, boolean superCommands, boolean logOutput){
-        this.botName = botName;
-        this.oauth = oauth;
-        this.admin = admin;
-        this.channel = channel;
-        this.silentJoinLeave = silentJoinLeave;
-        this.superCommands = superCommands;
-        this.logOutput = logOutput;
+    public DankChannelBot(String configFile){
+        this.configFile = configFile;
         start();
     }
 
     private void start(){
-        if(running) return;
+        if(running)
+            return;
+
         running = true;
+
+        dankConfig = new DankConfig(configFile);
+        dankConfig.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
+        dankConfig.loadConfig();
+
+        if(!dankConfig.containsRequiredOptions()) {
+            System.out.printf("Your config file must contain the following values: %s", String.join(", ", dankConfig.getRequiredOptions()));
+            System.exit(1);
+        }
+
+        botName = dankConfig.getString("botName");
+        oauth = dankConfig.getString("oauth");
+        admin = dankConfig.getString("admin");
+        trustedUsers = dankConfig.getStringArray("trustedUsers");
+        channel = "#" + dankConfig.getString("channel");
+
+        silentJoinLeave = dankConfig.getBoolean("silentJoinLeave");
+        superCommands = dankConfig.getBoolean("superCommands");
+        logOutput = dankConfig.getBoolean("logOutput", false);
+
+        System.out.println("Dankbot starting!");
+        System.out.println("Botname: " + dankConfig.getString("botName"));
+        System.out.println("Channel: " + dankConfig.getString("channel"));
+        System.out.println("Admin: " + dankConfig.getString("admin"));
+
         setName(botName);
         setVerbose(logOutput);
         setMessageDelay(666);
+
         try{
             connect("irc.twitch.tv", 6667, oauth);
         }catch(IOException | IrcException e){
@@ -68,11 +77,16 @@ public class DankChannelBot extends PircBot{
             e.printStackTrace();
             return;
         }
+
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 
+        if(!silentJoinLeave)
+            channelMessage("/me joining MrDestructoid");
+
         dankHandler = new DankHandler();
         dankWhisperBot = new DankWhisperBot(this, botName, oauth, admin, channel, superCommands, logOutput, dankHandler);
+
         dankHandler.addModule(new CommandAdd(this, dankWhisperBot, "!addcommand", 0, 0));
         dankHandler.addModule(new CommandRemove(this, dankWhisperBot, "!removecommand", 0 ,0));
         dankHandler.addModule(new Stop(this, dankWhisperBot, "!stop", 0, 0));
@@ -82,8 +96,8 @@ public class DankChannelBot extends PircBot{
         sendMessage(channel, message);
     }
 
-    public void onMessage(String channel, String sender, String login, String hostname, String message){
-        dankHandler.checkChannelMessage(message, sender);
+    public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags){
+        dankHandler.checkChannelMessage(message, sender, tags);
     }
 
     public DankHandler getDankHandler(){
@@ -96,5 +110,13 @@ public class DankChannelBot extends PircBot{
 
     public String getAdmin() {
         return admin;
+    }
+
+    public DankConfig getDankConfig() {
+        return dankConfig;
+    }
+
+    public boolean isSilentJoinLeave() {
+        return silentJoinLeave;
     }
 }

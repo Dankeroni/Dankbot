@@ -4,6 +4,7 @@ import com.dankeroni.dankbot.DankChannelBot;
 import com.dankeroni.dankbot.DankModule;
 import com.dankeroni.dankbot.DankWhisperBot;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class BotUpTime extends DankModule{
@@ -12,7 +13,7 @@ public class BotUpTime extends DankModule{
         super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
     }
 
-    protected void onChannelCommand(String  message, String sender){
+    protected void onChannelCommand(String message, String sender, HashMap<String, String> tags){
         dankChannelBot.channelMessage("The bot has been up for: " + getBotUpTime());
     }
 

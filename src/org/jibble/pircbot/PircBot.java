@@ -9,10 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public abstract class PircBot implements ReplyConstants {
 
@@ -835,8 +832,25 @@ public abstract class PircBot implements ReplyConstants {
      * @param line The raw line of text from the server.
      */
     protected void handleLine(String line) {
+        HashMap<String, String> tags = new HashMap<>();
+
     	if (line.startsWith("@")) {
-         	line = line.split("\\s+", 2)[1];
+            String[] messageParts = line.split("\\s+", 2);
+            String rawTags = messageParts[0].substring(1);
+         	line = messageParts[1];
+            String[] tagArray = rawTags.split(";");
+
+            for(String rawTag: tagArray) {
+                String[] tagAndValue = rawTag.split("=");
+                String tag = tagAndValue[0];
+
+                try{
+                    String value = tagAndValue[1];
+                    tags.put(tag, value);
+                } catch(Exception e) {
+                    tags.put(tag, null);
+                }
+            }
         }
     	this.log(line);
         // Check for server pings.
@@ -950,7 +964,11 @@ public abstract class PircBot implements ReplyConstants {
         }
         else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0) {
             // This is a normal message to a channel.
-            this.onMessage(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
+            if(tags.isEmpty()){
+                this.onMessage(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
+            } else {
+                this.onMessageWithTags(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2), tags);
+            }
         }
         else if (command.equals("PRIVMSG")) {
             // This is a private message to us.
@@ -1030,8 +1048,8 @@ public abstract class PircBot implements ReplyConstants {
         }
         
     }
-    
-    
+
+
     /**
      * This method is called once the PircBot has successfully connected to
      * the IRC server.
@@ -1238,8 +1256,16 @@ public abstract class PircBot implements ReplyConstants {
      * @param message The actual message sent to the channel.
      */
     protected void onMessage(String channel, String sender, String login, String hostname, String message) {}
+
+
+    protected void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {}
+
     
     protected void onWhisper(String sourceNick, String sourceLogin, String sourceHostname, String message) {}
+
+
+    protected void onWhisperWithTags(String sourceNick, String sourceLogin, String sourceHostname, String message, HashMap<String, String> tags) {}
+
 
     /**
      * This method is called whenever a private message is sent to the PircBot.
