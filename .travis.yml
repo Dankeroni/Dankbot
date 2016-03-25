@@ -6,8 +6,12 @@ jdk:
 before_install:
  - chmod +x gradlew
 
+addons:
+  artifacts: true
+
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
 cache:
   directories:
     - $HOME/.gradle/caches/
