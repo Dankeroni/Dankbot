@@ -4,13 +4,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-public class DankConfig {
+public class Config {
 
     private Properties properties;
     private String file;
     private String[] requiredOptions;
 
-    public DankConfig(String file){
+    public Config(String file) {
         this.file = file;
     }
 
@@ -41,12 +41,12 @@ public class DankConfig {
 
     }
 
-    public void setRequiredOptions(String[] requiredOptions) {
-        this.requiredOptions = requiredOptions;
-    }
-
     public String[] getRequiredOptions(){
         return requiredOptions;
+    }
+
+    public void setRequiredOptions(String[] requiredOptions) {
+        this.requiredOptions = requiredOptions;
     }
 
     public String getString(String option){

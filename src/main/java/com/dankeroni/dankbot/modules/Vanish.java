@@ -1,18 +1,27 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.DankChannelBot;
-import com.dankeroni.dankbot.DankModule;
-import com.dankeroni.dankbot.DankWhisperBot;
+import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Module;
+import com.dankeroni.dankbot.Utils;
 
 import java.util.HashMap;
 
-public class Vanish extends DankModule{
+public class Vanish extends Module {
 
-    public Vanish(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
-        super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
+    public Vanish(ChannelBot channelBot) {
+        super(channelBot);
     }
 
-    protected void onChannelCommand(String message, String sender, HashMap<String, String> tags){
-        dankChannelBot.channelMessage(".timeout ".concat(sender).concat(" 1"));
+    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+        if (Utils.detectCommand(message, "!vanish")) {
+            channelBot.channelMessage(String.format(".timeout %s 1", user));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+        return false;
     }
 }

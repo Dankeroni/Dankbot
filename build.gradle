@@ -2,18 +2,17 @@ group 'com.dankeroni'
 
 apply plugin: 'java'
 
-sourceCompatibility = 7
+sourceCompatibility = 8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
     compile "com.google.code.gson:gson:2.6.2"
 }
 
 jar {
     from configurations.compile.collect {zipTree it}
-    manifest.attributes "Main-Class": "com.dankeroni.dankbot.DankChannelBot"
+    manifest.attributes "Main-Class": "com.dankeroni.dankbot.ChannelBot"
 }

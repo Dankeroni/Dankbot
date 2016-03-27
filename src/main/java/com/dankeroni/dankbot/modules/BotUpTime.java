@@ -1,24 +1,48 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.DankChannelBot;
-import com.dankeroni.dankbot.DankModule;
-import com.dankeroni.dankbot.DankWhisperBot;
+import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Module;
+import com.dankeroni.dankbot.Utils;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class BotUpTime extends DankModule{
+public class BotUpTime extends Module {
 
-    public BotUpTime(DankChannelBot dankChannelBot, DankWhisperBot dankWhisperBot, String command, int globalCooldown, int userCooldown) {
-        super(dankChannelBot, dankWhisperBot, command, globalCooldown, userCooldown);
+    public BotUpTime(ChannelBot channelBot) {
+        super(channelBot);
     }
 
-    protected void onChannelCommand(String message, String sender, HashMap<String, String> tags){
-        dankChannelBot.channelMessage("The bot has been up for: " + getBotUpTime());
+    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+        if (Utils.detectCommand(message, "!up")) {
+            this.onChannelCommand(tags);
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+        if (Utils.detectCommand(message, "!up")) {
+            this.onWhisperCommand(user);
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    private void onChannelCommand(HashMap<String, String> tags) {
+        channelBot.channelMessage(String.format("%s, the bot has been up for: %s", tags.get("display-name"), this.getBotUpTime()));
+    }
+
+    private void onWhisperCommand(String user) {
+        channelBot.getWhisperBot().sendWhisper(user, String.format("The bot in %s has been up for: %s", channelBot.getChannel().substring(1), this.getBotUpTime()));
     }
 
     private String getBotUpTime() {
-        long millis = System.currentTimeMillis() - dankChannelBot.getTimeStarted();
+        long millis = System.currentTimeMillis() - channelBot.getTimeStarted();
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
@@ -27,13 +51,14 @@ public class BotUpTime extends DankModule{
         millis -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
-        return String.valueOf(days) +
-                " Days " +
-                hours +
-                " Hours " +
-                minutes +
-                " Minutes " +
-                seconds +
-                " Seconds";
+        if (days > 0) {
+            return String.format("%s Days %s Hours %s Minutes %s Seconds", days, hours, minutes, seconds);
+        } else if (hours > 0) {
+            return String.format("%s Hours %s Minutes %s Seconds", hours, minutes, seconds);
+        } else if (minutes > 0) {
+            return String.format("%s Minutes %s Seconds", minutes, seconds);
+        } else {
+            return String.format("%s Seconds", seconds);
+        }
     }
 }

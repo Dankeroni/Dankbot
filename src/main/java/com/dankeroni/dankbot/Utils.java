@@ -4,15 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class DankUtils{
-
-    public static String[] splitString(String string){
-        try{
-            return string.split("\\s+");
-        }catch(Exception e){
-            return null;
-        }
-    }
+public class Utils {
 
     public static int clamp(int var, int min, int max) {
         if(var >= max)
@@ -24,20 +16,19 @@ public class DankUtils{
     }
 
     public static String readUrl(String urlString) throws Exception {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
+        URL url = new URL(urlString);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+            StringBuilder buffer = new StringBuilder();
             int read;
             char[] chars = new char[1024];
             while ((read = reader.read(chars)) != -1)
                 buffer.append(chars, 0, read);
 
             return buffer.toString();
-        } finally {
-            if (reader != null)
-                reader.close();
         }
+    }
+
+    public static boolean detectCommand(String message, String command) {
+        return message.equalsIgnoreCase(command) || message.toLowerCase().startsWith(command + " ");
     }
 }
