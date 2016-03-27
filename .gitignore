@@ -19,6 +19,8 @@
 
 # Gradle:
 .idea/gradle.xml
+.gradle/
+build/
 
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
