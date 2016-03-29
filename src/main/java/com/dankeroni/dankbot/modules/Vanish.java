@@ -12,16 +12,16 @@ public class Vanish extends Module {
         super(channelBot);
     }
 
-    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!vanish")) {
-            channelBot.channelMessage(String.format(".timeout %s 1", user));
+            channelBot.channelMessage(String.format(".timeout %s 1", sender));
             return true;
         } else {
             return false;
         }
     }
 
-    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         return false;
     }
 }

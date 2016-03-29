@@ -6,7 +6,7 @@ public class CommandHandler {
 
     private HashMap<String, Command> commands = new HashMap<>();
 
-    public boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+    public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
                 command.getValue().onChannelCommand();
@@ -16,10 +16,10 @@ public class CommandHandler {
         return false;
     }
 
-    public boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+    public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                command.getValue().onWhisperCommand(user);
+                command.getValue().onWhisperCommand(sender);
                 return true;
             }
         }

@@ -14,8 +14,8 @@ public class Command {
         channelBot.channelMessage(response);
     }
 
-    protected void onWhisperCommand(String user) {
-        channelBot.getWhisperBot().sendWhisper(user, response);
+    protected void onWhisperCommand(String sender) {
+        channelBot.getWhisperBot().sendWhisper(sender, response);
     }
 
 }

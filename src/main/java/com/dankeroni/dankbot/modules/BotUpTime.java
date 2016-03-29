@@ -13,7 +13,7 @@ public class BotUpTime extends Module {
         super(channelBot);
     }
 
-    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!up")) {
             this.onChannelCommand(tags);
             return true;
@@ -23,9 +23,9 @@ public class BotUpTime extends Module {
         }
     }
 
-    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!up")) {
-            this.onWhisperCommand(user);
+            this.onWhisperCommand(sender);
             return true;
 
         } else {
@@ -37,8 +37,8 @@ public class BotUpTime extends Module {
         channelBot.channelMessage(String.format("%s, the bot has been up for: %s", tags.get("display-name"), this.getBotUpTime()));
     }
 
-    private void onWhisperCommand(String user) {
-        channelBot.getWhisperBot().sendWhisper(user, String.format("The bot in %s has been up for: %s", channelBot.getChannel().substring(1), this.getBotUpTime()));
+    private void onWhisperCommand(String sender) {
+        channelBot.getWhisperBot().sendWhisper(sender, String.format("The bot in %s has been up for: %s", channelBot.getChannel().substring(1), this.getBotUpTime()));
     }
 
     private String getBotUpTime() {

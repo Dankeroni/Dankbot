@@ -15,7 +15,7 @@ public class Time extends Module {
         super(channelBot);
     }
 
-    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!time")) {
             channelBot.channelMessage(response());
             return true;
@@ -24,9 +24,9 @@ public class Time extends Module {
         }
     }
 
-    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
+    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!time")) {
-            channelBot.getWhisperBot().sendWhisper(user, response());
+            channelBot.getWhisperBot().sendWhisper(sender, response());
             return true;
         } else {
             return false;

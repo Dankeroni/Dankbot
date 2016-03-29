@@ -11,7 +11,7 @@ public abstract class Module {
         this.channelBot = channelBot;
     }
 
-    protected abstract boolean checkChannelMessage(String message, String user, HashMap<String, String> tags);
+    protected abstract boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags);
 
-    protected abstract boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags);
+    protected abstract boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags);
 }

@@ -38,6 +38,8 @@ public class OutputThread extends Thread {
             try {
                 bwriter.write(line + "\r\n");
                 bwriter.flush();
+                if(line.startsWith("PASS") && line.length() > 5)
+                    line = "PASS " + line.charAt(5) + "***";
                 bot.log(">>>" + line);
             }
             catch (Exception e) {

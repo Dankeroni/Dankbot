@@ -52,7 +52,7 @@ public class ChannelBot extends PircBot {
         botName = config.getString("botName").toLowerCase();
         oauth = config.getString("oauth");
         admin = config.getString("admin").toLowerCase();
-        trustedUsers = config.getStringArray("trustedUsers");
+        trustedUsers = config.getStringArray("trustedsenders");
         channel = "#" + config.getString("channel").toLowerCase();
 
         silentJoinLeave = config.getBoolean("silentJoinLeave");
@@ -106,11 +106,11 @@ public class ChannelBot extends PircBot {
 
     public void channelMessage(String message){
         if (message != null && !message.trim().isEmpty())
-            sendMessage(channel, message);
+            sendMessage(channel, message + " ");
     }
 
-    public void onMessageWithTags(String channel, String user, String login, String hostname, String message, HashMap<String, String> tags) {
-        moduleHandler.checkChannelMessage(message, user, tags);
+    public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {
+        moduleHandler.checkChannelMessage(message, sender, tags);
     }
 
     public ModuleHandler getModuleHandler() {

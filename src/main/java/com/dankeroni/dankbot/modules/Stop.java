@@ -12,18 +12,18 @@ public class Stop extends Module {
         super(channelBot);
     }
 
-    protected boolean checkChannelMessage(String message, String user, HashMap<String, String> tags) {
-        return check(message, user);
+    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
+        return check(message, sender);
     }
 
-    protected boolean checkWhisperMessage(String message, String user, HashMap<String, String> tags) {
-        return check(message, user);
+    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
+        return check(message, sender);
     }
 
-    protected boolean check(String message, String user) {
+    protected boolean check(String message, String sender) {
         if (!Utils.detectCommand(message, "!stop")) return false;
 
-        if (user.equalsIgnoreCase(channelBot.getAdmin())) {
+        if (sender.equalsIgnoreCase(channelBot.getAdmin())) {
             this.stopBot();
         }
 
