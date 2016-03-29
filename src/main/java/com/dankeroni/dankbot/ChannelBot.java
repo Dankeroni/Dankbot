@@ -81,13 +81,19 @@ public class ChannelBot extends PircBot {
             System.out.println("There was a problem fetching the chat server list, using default server");
         }
 
-        try{
-            connect(ip, port, oauth);
-        }catch(IOException | IrcException e){
-            System.out.println("Twitch chat servers offline/Check your internet connection/firewall");
-            e.printStackTrace();
-            return;
+        int tries = 0;
+
+        while (!isConnected() && tries++ < 5) {
+            try {
+                connect(ip, port, oauth);
+            } catch (IOException | IrcException e) {
+                System.out.println("Twitch chat servers offline/Check your internet connection/firewall");
+                e.printStackTrace();
+                return;
+            }
         }
+
+        if (!isConnected()) this.log("Chat servers down!");
 
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");

@@ -42,18 +42,29 @@ public class Utils {
     public static String format(String message, Object... inputArgs) {
         if(message.contains("{") && message.contains("}")) {
             String formatedString = message;
-            String[] messageArgs = makeArgs((String) inputArgs[0]);
 
             HashMap<String, String> args = new HashMap<>();
 
+            for(int i2 = 0; i2 < 10; i2++)
+                args.put("{arg" + String.valueOf(i2) + "}", null);
+
+            String[] messageArgs = makeArgs((String) inputArgs[0]);
             for(int i = 0; i < messageArgs.length; i++)
                 args.put("{arg" + String.valueOf(i) + "}", messageArgs[i]);
 
             HashMap<String, String> tags = (HashMap<String, String>) inputArgs[1];
             args.put("{sender}", tags.get("display-name"));
 
-            for(HashMap.Entry<String, String> arg: args.entrySet())
-                formatedString = formatedString.replace(arg.getKey(), arg.getValue());
+            for(HashMap.Entry<String, String> arg: args.entrySet()) {
+                String key = arg.getKey(), value = arg.getValue();
+
+                if(message.contains(key))
+                    if(value != null && !value.trim().isEmpty()) {
+                        formatedString = formatedString.replace(key, value);
+                    } else {
+                        return tags.get("display-name") + ", invalid arguments";
+                    }
+            }
 
             return formatedString;
         } else {
