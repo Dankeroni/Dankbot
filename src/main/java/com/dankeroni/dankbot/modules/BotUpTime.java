@@ -34,11 +34,11 @@ public class BotUpTime extends Module {
     }
 
     private void onChannelCommand(HashMap<String, String> tags) {
-        channelBot.channelMessage(String.format("%s, the bot has been up for: %s", tags.get("display-name"), this.getBotUpTime()));
+        channelBot.channelMessage("The bot has been up for: " + this.getBotUpTime());
     }
 
     private void onWhisperCommand(String sender) {
-        channelBot.getWhisperBot().sendWhisper(sender, String.format("The bot in %s has been up for: %s", channelBot.getChannel().substring(1), this.getBotUpTime()));
+        channelBot.getWhisperBot().sendWhisper(sender, "The bots has been up for: " + this.getBotUpTime());
     }
 
     private String getBotUpTime() {

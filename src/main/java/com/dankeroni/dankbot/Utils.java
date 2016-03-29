@@ -3,6 +3,8 @@ package com.dankeroni.dankbot;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class Utils {
 
@@ -30,5 +32,32 @@ public class Utils {
 
     public static boolean detectCommand(String message, String command) {
         return message.equalsIgnoreCase(command) || message.toLowerCase().startsWith(command + " ");
+    }
+
+    public static String[] makeArgs(String message) {
+        String[] messageWords = message.split(" ");
+        return Arrays.copyOfRange(messageWords, 1, messageWords.length);
+    }
+
+    public static String format(String message, Object... inputArgs) {
+        if(message.contains("{") && message.contains("}")) {
+            String formatedString = message;
+            String[] messageArgs = makeArgs((String) inputArgs[0]);
+
+            HashMap<String, String> args = new HashMap<>();
+
+            for(int i = 0; i < messageArgs.length; i++)
+                args.put("{arg" + String.valueOf(i) + "}", messageArgs[i]);
+
+            HashMap<String, String> tags = (HashMap<String, String>) inputArgs[1];
+            args.put("{sender}", tags.get("display-name"));
+
+            for(HashMap.Entry<String, String> arg: args.entrySet())
+                formatedString = formatedString.replace(arg.getKey(), arg.getValue());
+
+            return formatedString;
+        } else {
+            return message;
+        }
     }
 }

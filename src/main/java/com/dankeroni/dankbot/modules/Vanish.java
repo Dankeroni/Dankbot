@@ -14,7 +14,7 @@ public class Vanish extends Module {
 
     protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         if (Utils.detectCommand(message, "!vanish")) {
-            channelBot.channelMessage(String.format(".timeout %s 1", sender));
+            channelBot.channelMessage(".timeout " + sender + " 1");
             return true;
         } else {
             return false;

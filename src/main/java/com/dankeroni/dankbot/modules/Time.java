@@ -36,6 +36,6 @@ public class Time extends Module {
     private String response() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return String.format("UTC time: %s", sdf.format(new Date()));
+        return "UTC time: " +  sdf.format(new Date());
     }
 }

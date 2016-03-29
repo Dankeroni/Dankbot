@@ -9,7 +9,7 @@ public class CommandHandler {
     public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                command.getValue().onChannelCommand();
+                command.getValue().onChannelCommand(message, tags);
                 return true;
             }
         }
@@ -19,7 +19,7 @@ public class CommandHandler {
     public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                command.getValue().onWhisperCommand(sender);
+                command.getValue().onWhisperCommand(message, sender, tags);
                 return true;
             }
         }
