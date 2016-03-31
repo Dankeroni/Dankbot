@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class CustomCommands extends Module {
 
-    private CommandHandler commandHandler = new CommandHandler();
+    private CommandHandler commandHandler = new CommandHandler(channelBot);
 
     public CustomCommands(ChannelBot channelBot) {
         super(channelBot);
@@ -41,7 +41,7 @@ public class CustomCommands extends Module {
         String commandName = words[1].toLowerCase();
         String response = words[2];
 
-        commandHandler.addCommand(commandName, new Command(channelBot, response));
+        commandHandler.addCommand(commandName, new Command(response));
     }
 
     private void removeCustomCommand(String sender, String message) {

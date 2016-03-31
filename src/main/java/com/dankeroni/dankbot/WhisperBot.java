@@ -67,9 +67,13 @@ public class WhisperBot extends PircBot {
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
     }
 
-    public void sendWhisper(String user, String message) {
+    public void whisperMessage(String user, String message) {
         if (message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
             sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
+    }
+
+    public void formatedWhisperMessage(String user, String message, String senderMessage, HashMap<String, String> tags) {
+        this.whisperMessage(user, Utils.format(message, senderMessage, tags));
     }
 
     public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {

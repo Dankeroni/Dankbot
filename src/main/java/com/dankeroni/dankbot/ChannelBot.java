@@ -64,6 +64,7 @@ public class ChannelBot extends PircBot {
         System.out.println("Channel: " + config.getString("channel"));
         System.out.println("Admin: " + config.getString("admin"));
 
+        Utils.setChannelBot(this);
         setName(botName);
         setVerbose(logOutput);
         setMessageDelay(666);
@@ -100,11 +101,8 @@ public class ChannelBot extends PircBot {
 
         whisperBot = new WhisperBot(this, botName, oauth, admin, channel, superCommands, logOutput, moduleHandler);
 
-        moduleHandler.addModule(new BotUpTime(this));
         moduleHandler.addModule(new CustomCommands(this));
         moduleHandler.addModule(new Stop(this));
-        moduleHandler.addModule(new Time(this));
-        moduleHandler.addModule(new Vanish(this));
 
         if(!silentJoinLeave)
             channelMessage("/me joining MrDestructoid");
@@ -113,6 +111,10 @@ public class ChannelBot extends PircBot {
     public void channelMessage(String message){
         if (message != null && !message.trim().isEmpty())
             sendMessage(channel, message + " ");
+    }
+
+    public void formatedChannelMessage(String message, String senderMessage, HashMap<String, String> tags) {
+        this.channelMessage(Utils.format(message, senderMessage, tags));
     }
 
     public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {

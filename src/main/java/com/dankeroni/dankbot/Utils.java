@@ -3,10 +3,20 @@ package com.dankeroni.dankbot;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public class Utils {
+
+    private static ChannelBot channelBot;
+
+    public static void setChannelBot(ChannelBot channelBot) {
+        Utils.channelBot = channelBot;
+    }
 
     public static int clamp(int var, int min, int max) {
         if(var >= max)
@@ -39,7 +49,7 @@ public class Utils {
         return Arrays.copyOfRange(messageWords, 1, messageWords.length);
     }
 
-    public static String format(String message, Object... inputArgs) {
+    public static String format(String message, String senderMessage, HashMap<String, String> tags) {
         if(message.contains("{") && message.contains("}")) {
             String formatedString = message;
 
@@ -48,12 +58,14 @@ public class Utils {
             for(int i2 = 0; i2 < 10; i2++)
                 args.put("{arg" + String.valueOf(i2) + "}", null);
 
-            String[] messageArgs = makeArgs((String) inputArgs[0]);
+            String[] messageArgs = makeArgs(senderMessage);
             for(int i = 0; i < messageArgs.length; i++)
                 args.put("{arg" + String.valueOf(i) + "}", messageArgs[i]);
 
-            HashMap<String, String> tags = (HashMap<String, String>) inputArgs[1];
             args.put("{sender}", tags.get("display-name"));
+
+            args.put("{time}", time());
+            args.put("{botuptime}", botUpTime());
 
             for(HashMap.Entry<String, String> arg: args.entrySet()) {
                 String key = arg.getKey(), value = arg.getValue();
@@ -69,6 +81,33 @@ public class Utils {
             return formatedString;
         } else {
             return message;
+        }
+    }
+
+    public static String time() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(new Date());
+    }
+
+    public static String botUpTime() {
+        long millis = System.currentTimeMillis() - channelBot.getTimeStarted();
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        if (days > 0) {
+            return String.format("%s Days %s Hours %s Minutes %s Seconds", days, hours, minutes, seconds);
+        } else if (hours > 0) {
+            return String.format("%s Hours %s Minutes %s Seconds", hours, minutes, seconds);
+        } else if (minutes > 0) {
+            return String.format("%s Minutes %s Seconds", minutes, seconds);
+        } else {
+            return String.format("%s Seconds", seconds);
         }
     }
 }
