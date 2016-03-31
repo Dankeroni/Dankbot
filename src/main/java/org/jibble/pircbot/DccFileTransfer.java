@@ -126,7 +126,7 @@ public class DccFileTransfer {
                         outBuffer[0] = (byte) ((_progress >> 24) & 0xff);
                         outBuffer[1] = (byte) ((_progress >> 16) & 0xff);
                         outBuffer[2] = (byte) ((_progress >> 8) & 0xff);
-                        outBuffer[3] = (byte) ((_progress >> 0) & 0xff);
+                        outBuffer[3] = (byte) ((_progress) & 0xff);
                         output.write(outBuffer);
                         output.flush();
                         delay();
@@ -172,13 +172,12 @@ public class DccFileTransfer {
                         ss = new ServerSocket(0);
                     }
                     else {
-                        for (int i = 0; i < ports.length; i++) {
+                        for (int port : ports) {
                             try {
-                                ss = new ServerSocket(ports[i]);
+                                ss = new ServerSocket(port);
                                 // Found a port number we could use.
                                 break;
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 // Do nothing; go round and try another port.
                             }
                         }

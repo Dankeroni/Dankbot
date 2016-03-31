@@ -5,7 +5,6 @@ import java.util.HashMap;
 public abstract class Module {
 
     protected ChannelBot channelBot;
-    protected String command;
 
     public Module(ChannelBot channelBot) {
         this.channelBot = channelBot;

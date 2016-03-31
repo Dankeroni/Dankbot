@@ -52,7 +52,7 @@ public class ChannelBot extends PircBot {
         botName = config.getString("botName").toLowerCase();
         oauth = config.getString("oauth");
         admin = config.getString("admin").toLowerCase();
-        trustedUsers = config.getStringArray("trustedsenders");
+        trustedUsers = config.getStringArray("trustedUsers");
         channel = "#" + config.getString("channel").toLowerCase();
 
         silentJoinLeave = config.getBoolean("silentJoinLeave");

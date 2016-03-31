@@ -1,7 +1,5 @@
 package com.dankeroni.dankbot;
 
-import java.util.HashMap;
-
 public class Command {
 
     private String response;
