@@ -25,20 +25,18 @@ public class Config {
     }
 
     public boolean containsRequiredOptions(){
-        return containsOptions(requiredOptions);
+        return containsRequiredOptions(requiredOptions);
     }
 
-    public boolean containsOptions(String[] requiredOptions){
+    public boolean containsRequiredOptions(String[] requiredOptions) {
         for(String requiredOption: requiredOptions) {
-            if (!properties.containsKey(requiredOption)) {
+            if (!properties.containsKey(requiredOption.trim())) {
                 return false;
-            } else if (properties.getProperty(requiredOption).trim().isEmpty()) {
-                System.out.println(properties.getProperty(requiredOption));
+            } else if (properties.getProperty(requiredOption.trim()).trim().isEmpty()) {
                 return false;
             }
         }
         return true;
-
     }
 
     public String[] getRequiredOptions(){
@@ -54,8 +52,8 @@ public class Config {
     }
 
     public String getString(String option, String defaultVal){
-        if(properties.containsKey(option))
-            return properties.getProperty(option);
+        if (properties.containsKey(option.trim()))
+            return properties.getProperty(option.trim()).trim();
         return defaultVal;
     }
 
@@ -64,8 +62,8 @@ public class Config {
     }
 
     public boolean getBoolean(String option, boolean defaultVal){
-        if(properties.containsKey(option))
-            return Boolean.parseBoolean(properties.getProperty(option));
+        if (properties.containsKey(option.trim()))
+            return Boolean.parseBoolean(properties.getProperty(option.trim().trim()));
         return defaultVal;
     }
 
@@ -74,8 +72,8 @@ public class Config {
     }
 
     public int getInt(String option, int defaultVal){
-        if(properties.containsKey(option))
-            return Integer.parseInt(properties.getProperty(option));
+        if (properties.containsKey(option.trim()))
+            return Integer.parseInt(properties.getProperty(option.trim().trim()));
         return defaultVal;
     }
 
@@ -84,8 +82,8 @@ public class Config {
     }
 
     public double getDouble(String option, double defaultVal){
-        if(properties.containsKey(option))
-            return Double.parseDouble(properties.getProperty(option));
+        if (properties.containsKey(option.trim()))
+            return Double.parseDouble(properties.getProperty(option.trim().trim()));
         return defaultVal;
     }
 
@@ -94,8 +92,8 @@ public class Config {
     }
 
     public float getFloat(String option, float defaultVal){
-        if(properties.containsKey(option))
-            return Float.parseFloat(properties.getProperty(option));
+        if (properties.containsKey(option.trim()))
+            return Float.parseFloat(properties.getProperty(option.trim().trim()));
         return defaultVal;
     }
 
@@ -104,8 +102,8 @@ public class Config {
     }
 
     public long getLong(String option, long defaultVal){
-        if(properties.containsKey(option))
-            return Long.parseLong(properties.getProperty(option));
+        if (properties.containsKey(option.trim()))
+            return Long.parseLong(properties.getProperty(option.trim()).trim());
         return defaultVal;
     }
 
@@ -114,8 +112,8 @@ public class Config {
     }
 
     public String[] getStringArray(String option, String[] defaultStringArray){
-        if(properties.containsKey(option))
-            return properties.getProperty(option).split(" ");
+        if (properties.containsKey(option.trim()))
+            return properties.getProperty(option.trim()).trim().split(" ");
         return defaultStringArray;
     }
 }

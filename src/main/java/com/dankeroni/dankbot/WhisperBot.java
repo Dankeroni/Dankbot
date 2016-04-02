@@ -10,17 +10,17 @@ public class WhisperBot extends PircBot {
 
     private ChannelBot channelBot;
     private String botName, oauth, admin, channel;
-    private boolean superCommand, logOutput, running = false;
+    private boolean superCommand, twitchChat, running = false;
     private ModuleHandler moduleHandler;
 
-    public WhisperBot(ChannelBot channelBot, String botName, String oauth, String admin, String channel, boolean superCommands, boolean logOutput, ModuleHandler moduleHandler) {
+    public WhisperBot(ChannelBot channelBot, String botName, String oauth, String admin, String channel, boolean superCommands, boolean twitchChat, ModuleHandler moduleHandler) {
         this.channelBot = channelBot;
         this.botName = botName;
         this.oauth = oauth;
         this.admin = admin;
         this.channel = channel;
         this.superCommand = superCommands;
-        this.logOutput = logOutput;
+        this.twitchChat = twitchChat;
         this.moduleHandler = moduleHandler;
         start();
     }
@@ -31,7 +31,7 @@ public class WhisperBot extends PircBot {
 
         running = true;
         setName(botName);
-        setVerbose(logOutput);
+        setVerbose(twitchChat);
 
         String ip = "192.16.64.180";
         int port = 443;

@@ -13,9 +13,11 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
     private static ChannelBot channelBot;
+    private static Config config;
 
     public static void setChannelBot(ChannelBot channelBot) {
         Utils.channelBot = channelBot;
+        Utils.config = channelBot.getConfig();
     }
 
     public static int clamp(int var, int min, int max) {
@@ -50,6 +52,10 @@ public class Utils {
     }
 
     public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags) {
+        return format(message, sender, senderMessage, tags, true);
+    }
+
+    public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags, boolean considerConfig) {
         if(message.contains("{") && message.contains("}")) {
             String formattedString = message;
 
@@ -62,9 +68,8 @@ public class Utils {
             for(int i = 0; i < messageArgs.length; i++)
                 args.put("{arg" + String.valueOf(i) + "}", messageArgs[i]);
 
-            args.put("{display-name}", tags.get("display-name"));
-            args.put("{sender}", sender);
-
+            args.put("{sender}", tags.get("display-name"));
+            args.put("{realsender}", sender);
             args.put("{time}", time());
             args.put("{botuptime}", botUpTime());
             args.put("{botname}", channelBot.getName());
@@ -75,7 +80,7 @@ public class Utils {
             for(HashMap.Entry<String, String> arg: args.entrySet()) {
                 String key = arg.getKey(), value = arg.getValue();
 
-                if(message.contains(key))
+                if (message.contains(key) && (!considerConfig || config.getBoolean(key, true)))
                     if(value != null && !value.trim().isEmpty()) {
                         formattedString = formattedString.replace(key, value);
                     } else {

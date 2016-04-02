@@ -1,3 +1,5 @@
+#[General settings]
+
 #The twitch username your bot runs on
 botName = BotName
 
@@ -13,11 +15,30 @@ admin = Admin
 #Placeholder until I implement points system(has no effect)
 trustedUsers = 
 
-#Log output in terminal(true or false)
-logOutput = true
+
+#[Flags]
+
+#Show twitch chat in terminal(true or false)
+twitchChat = true
 
 #Join and leave channels silently(true or false)
 silentJoinLeave = false
 
 #Advanced commands(true or false)
 superCommands = false
+
+
+#[Variables for custom command formatting(true or false)]
+
+{sender} = true
+{realsender} = true
+{time} = true
+{botuptime} = true
+{commitHash} = true
+{commitNumber} = true
+{branch} = true
+
+
+#[Modules(true or false}
+
+CustomCommands = true

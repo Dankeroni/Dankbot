@@ -17,7 +17,7 @@ public class ChannelBot extends PircBot {
     private long timeStarted = System.currentTimeMillis();
     private String botName, oauth, admin, channel, commitHash, branch, path;
     private String[] trustedUsers;
-    private boolean silentJoinLeave, superCommands, logOutput, running = false;
+    private boolean silentJoinLeave, superCommands, twitchChat, running = false;
     private ModuleHandler moduleHandler = new ModuleHandler();
     private WhisperBot whisperBot;
     private Config config;
@@ -32,10 +32,8 @@ public class ChannelBot extends PircBot {
         if (args.length == 0) {
             new ChannelBot("./");
         } else {
-            for (String path : args)
-                new ChannelBot(path);
+            new ChannelBot(args[0]);
         }
-
     }
 
     private void start(){
@@ -61,7 +59,7 @@ public class ChannelBot extends PircBot {
 
         silentJoinLeave = config.getBoolean("silentJoinLeave");
         superCommands = config.getBoolean("superCommands");
-        logOutput = config.getBoolean("logOutput", false);
+        twitchChat = config.getBoolean("twitchChat", false);
 
         System.out.println("Dankbot starting!");
         System.out.println("Botname: " + config.getString("botName"));
@@ -70,7 +68,7 @@ public class ChannelBot extends PircBot {
 
         Utils.setChannelBot(this);
         setName(botName);
-        setVerbose(logOutput);
+        setVerbose(twitchChat);
 
         String ip = "irc.tchat.twitch.tv";
         int port = 80;
@@ -102,7 +100,7 @@ public class ChannelBot extends PircBot {
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 
-        whisperBot = new WhisperBot(this, botName, oauth, admin, channel, superCommands, logOutput, moduleHandler);
+        whisperBot = new WhisperBot(this, botName, oauth, admin, channel, superCommands, twitchChat, moduleHandler);
 
         moduleHandler.addModule(new CustomCommands(this));
         moduleHandler.addModule(new Stop(this));
