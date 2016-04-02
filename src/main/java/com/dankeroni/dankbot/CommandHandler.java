@@ -14,7 +14,7 @@ public class CommandHandler {
     public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                channelBot.formatedChannelMessage(command.getValue().getResponse(), message, tags);
+                channelBot.formattedChannelMessage(command.getValue().getResponse(), sender, message, tags);
                 return true;
             }
         }
@@ -24,19 +24,29 @@ public class CommandHandler {
     public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                channelBot.getWhisperBot().formatedWhisperMessage(sender, command.getValue().getResponse(), message, tags);
+                channelBot.getWhisperBot().formattedWhisperMessage(command.getValue().getResponse(), sender, message, tags);
                 return true;
             }
         }
         return false;
     }
 
-    public void addCommand(String commandString, Command command) {
-        commands.put(commandString, command);
+    public boolean addCommand(String commandString, Command command) {
+        if (commands.containsKey(commandString)) {
+            return false;
+        } else {
+            commands.put(commandString, command);
+            return true;
+        }
     }
 
-    public void removeCommand(String commandName) {
-        commands.remove(commandName);
+    public boolean removeCommand(String commandName) {
+        if (commands.containsKey(commandName)) {
+            commands.remove(commandName);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public HashMap<String, Command> getCommands() {

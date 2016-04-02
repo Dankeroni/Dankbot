@@ -41,7 +41,7 @@ public class Utils {
     }
 
     public static boolean detectCommand(String message, String command) {
-        return message.equalsIgnoreCase(command) || message.toLowerCase().startsWith(command + " ");
+        return message.equalsIgnoreCase(command) || message.startsWith(command + " ");
     }
 
     public static String[] makeArgs(String message) {
@@ -49,9 +49,9 @@ public class Utils {
         return Arrays.copyOfRange(messageWords, 1, messageWords.length);
     }
 
-    public static String format(String message, String senderMessage, HashMap<String, String> tags) {
+    public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags) {
         if(message.contains("{") && message.contains("}")) {
-            String formatedString = message;
+            String formattedString = message;
 
             HashMap<String, String> args = new HashMap<>();
 
@@ -62,23 +62,28 @@ public class Utils {
             for(int i = 0; i < messageArgs.length; i++)
                 args.put("{arg" + String.valueOf(i) + "}", messageArgs[i]);
 
-            args.put("{sender}", tags.get("display-name"));
+            args.put("{display-name}", tags.get("display-name"));
+            args.put("{sender}", sender);
 
             args.put("{time}", time());
             args.put("{botuptime}", botUpTime());
+            args.put("{botname}", channelBot.getName());
+            args.put("{commitHash}", channelBot.getCommitHash());
+            args.put("{commitNumber}", String.valueOf(channelBot.getCommitNumber()));
+            args.put("{branch}", channelBot.getBranch());
 
             for(HashMap.Entry<String, String> arg: args.entrySet()) {
                 String key = arg.getKey(), value = arg.getValue();
 
                 if(message.contains(key))
                     if(value != null && !value.trim().isEmpty()) {
-                        formatedString = formatedString.replace(key, value);
+                        formattedString = formattedString.replace(key, value);
                     } else {
                         return tags.get("display-name") + ", invalid arguments";
                     }
             }
 
-            return formatedString;
+            return formattedString;
         } else {
             return message;
         }
@@ -101,13 +106,13 @@ public class Utils {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         if (days > 0) {
-            return String.format("%s Days %s Hours %s Minutes %s Seconds", days, hours, minutes, seconds);
+            return String.format("%sd %sh %sm %ss", days, hours, minutes, seconds);
         } else if (hours > 0) {
-            return String.format("%s Hours %s Minutes %s Seconds", hours, minutes, seconds);
+            return String.format("%sh %sm %ss", hours, minutes, seconds);
         } else if (minutes > 0) {
-            return String.format("%s Minutes %s Seconds", minutes, seconds);
+            return String.format("%sm %ss", minutes, seconds);
         } else {
-            return String.format("%s Seconds", seconds);
+            return String.format("%ss", seconds);
         }
     }
 }

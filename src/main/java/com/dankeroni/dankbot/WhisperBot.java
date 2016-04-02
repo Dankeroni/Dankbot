@@ -72,8 +72,8 @@ public class WhisperBot extends PircBot {
             sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
     }
 
-    public void formatedWhisperMessage(String user, String message, String senderMessage, HashMap<String, String> tags) {
-        this.whisperMessage(user, Utils.format(message, senderMessage, tags));
+    public void formattedWhisperMessage(String message, String user, String senderMessage, HashMap<String, String> tags) {
+        this.whisperMessage(user, Utils.format(message, user, senderMessage, tags));
     }
 
     public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {

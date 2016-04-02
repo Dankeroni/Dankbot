@@ -32,7 +32,15 @@ public class Stop extends Module {
 
     private void stopBot() {
         if (!channelBot.isSilentJoinLeave()) {
-            channelBot.channelMessage("/me leaving MrDestructoid");
+            String commitHash = channelBot.getCommitHash();
+            int commitNumber = channelBot.getCommitNumber();
+
+            if (!commitHash.trim().isEmpty() && !(commitNumber == 0)) {
+                channelBot.channelMessage("/me commit " + commitHash + " number " + commitNumber + " leaving MrDestructoid");
+            } else {
+                channelBot.channelMessage("/me leaving MrDestructoid");
+            }
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

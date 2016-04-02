@@ -1,11 +1,6 @@
 package org.jibble.pircbot;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -955,7 +950,7 @@ public abstract class PircBot implements ReplyConstants {
         }
         else if (command.equals("PRIVMSG") && _channelPrefixes.indexOf(target.charAt(0)) >= 0) {
             // This is a normal message to a channel.
-            if(tags.isEmpty()){
+            if (tags == null || tags.isEmpty()) {
                 this.onMessage(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
             } else {
                 this.onMessageWithTags(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2), tags);
@@ -967,7 +962,7 @@ public abstract class PircBot implements ReplyConstants {
         }
         else if (command.equals("WHISPER")) {
         	// Twitch whisper to us.
-            if (tags.isEmpty()) {
+            if (tags == null || tags.isEmpty()) {
                 this.onWhisper(sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
             } else {
                 this.onWhisperWithTags(sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2), tags);
@@ -997,7 +992,11 @@ public abstract class PircBot implements ReplyConstants {
         }
         else if (command.equals("NOTICE")) {
             // Someone is sending a notice.
-            this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2));
+            if (tags == null || tags.isEmpty()) {
+                this.onNotice(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2));
+            } else {
+                this.onNoticeWithTags(sourceNick, sourceLogin, sourceHostname, target, line.substring(line.indexOf(" :") + 2), tags);
+            }
         }
         else if (command.equals("QUIT")) {
             // Someone has quit from the IRC server.
@@ -1033,6 +1032,24 @@ public abstract class PircBot implements ReplyConstants {
         else if (command.equals("INVITE")) {
             // Somebody is inviting somebody else into a channel.
             this.onInvite(target, sourceNick, sourceLogin, sourceHostname, line.substring(line.indexOf(" :") + 2));
+        } else if (command.equals("USERSTATE")) {
+            if (tags == null || tags.isEmpty()) {
+                this.onUserstate(target);
+            } else {
+                this.onUserstateWithTags(target, tags);
+            }
+        } else if (command.equals("GLOBALUSERSTATE")) {
+            if (tags == null || tags.isEmpty()) {
+                this.onGlobalUserstate();
+            } else {
+                this.onGlobalUserstateWithTags(tags);
+            }
+        } else if (command.equals("ROOMSTATE")) {
+            if (tags == null || tags.isEmpty()) {
+                this.onRoomstate(target);
+            } else {
+                this.onRoomstateWithTags(target, tags);
+            }
         }
         else {
             // If we reach this point, then we've found something that the PircBot
@@ -1250,6 +1267,24 @@ public abstract class PircBot implements ReplyConstants {
 
     protected void onWhisperWithTags(String sourceNick, String sourceLogin, String sourceHostname, String message, HashMap<String, String> tags) {}
 
+    protected void onUserstate(String target) {
+    }
+
+    protected void onUserstateWithTags(String target, HashMap<String, String> tags) {
+    }
+
+    protected void onGlobalUserstate() {
+    }
+
+    protected void onGlobalUserstateWithTags(HashMap<String, String> tags) {
+    }
+
+    protected void onRoomstate(String target) {
+    }
+
+    protected void onRoomstateWithTags(String target, HashMap<String, String> tags) {
+    }
+
     /**
      * This method is called whenever a private message is sent to the PircBot.
      *  <p>
@@ -1291,7 +1326,10 @@ public abstract class PircBot implements ReplyConstants {
      * @param notice The notice message.
      */
     protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {}
-    
+
+    protected void onNoticeWithTags(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, HashMap<String, String> tags) {
+    }
+
     /**
      * This method is called whenever someone (possibly us) joins a channel
      * which we are on.

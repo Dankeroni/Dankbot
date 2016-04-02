@@ -1,35 +1,39 @@
 package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.Servers;
-import com.dankeroni.dankbot.modules.*;
+import com.dankeroni.dankbot.modules.CustomCommands;
+import com.dankeroni.dankbot.modules.Stop;
 import com.google.gson.Gson;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 public class ChannelBot extends PircBot {
 
     private long timeStarted = System.currentTimeMillis();
-    private String botName, oauth, admin, channel, configFile;
+    private String botName, oauth, admin, channel, commitHash, branch, path;
     private String[] trustedUsers;
     private boolean silentJoinLeave, superCommands, logOutput, running = false;
     private ModuleHandler moduleHandler = new ModuleHandler();
     private WhisperBot whisperBot;
     private Config config;
+    private int commitNumber;
 
-    public ChannelBot(String configFile) {
-        this.configFile = configFile;
+    public ChannelBot(String path) {
+        this.path = path;
         start();
     }
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            new ChannelBot("config.properties");
+            new ChannelBot("./");
         } else {
-            for (String configFile : args)
-                new ChannelBot(configFile);
+            for (String path : args)
+                new ChannelBot(path);
         }
 
     }
@@ -40,12 +44,12 @@ public class ChannelBot extends PircBot {
 
         running = true;
 
-        config = new Config(configFile);
+        config = new Config(path + "config.properties");
         config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
         config.loadConfig();
 
         if (!config.containsRequiredOptions()) {
-            System.out.printf("Your config file must contain the following values: %s", String.join(", ", config.getRequiredOptions()));
+            System.out.printf("Your config file must contain the following values: %s", String.join(", ", (CharSequence[]) config.getRequiredOptions()));
             System.exit(1);
         }
 
@@ -67,7 +71,6 @@ public class ChannelBot extends PircBot {
         Utils.setChannelBot(this);
         setName(botName);
         setVerbose(logOutput);
-        setMessageDelay(666);
 
         String ip = "irc.tchat.twitch.tv";
         int port = 80;
@@ -104,8 +107,17 @@ public class ChannelBot extends PircBot {
         moduleHandler.addModule(new CustomCommands(this));
         moduleHandler.addModule(new Stop(this));
 
-        if(!silentJoinLeave)
-            channelMessage("/me joining MrDestructoid");
+        if (!silentJoinLeave) {
+            try {
+                commitHash = this.readFromShellCommand("git rev-parse --short HEAD");
+                commitNumber = Integer.parseInt(this.readFromShellCommand("git rev-list --count HEAD"));
+                this.channelMessage("/me commit " + commitHash + " number " + commitNumber + " joining MrDestructoid");
+
+                branch = readFromShellCommand("git branch").substring(2);
+            } catch (Exception e) {
+                this.channelMessage("/me joining MrDestructoid");
+            }
+        }
     }
 
     public void channelMessage(String message){
@@ -113,12 +125,36 @@ public class ChannelBot extends PircBot {
             sendMessage(channel, message + " ");
     }
 
-    public void formatedChannelMessage(String message, String senderMessage, HashMap<String, String> tags) {
-        this.channelMessage(Utils.format(message, senderMessage, tags));
+    public void formattedChannelMessage(String message, String sender, String senderMessage, HashMap<String, String> tags) {
+        this.channelMessage(Utils.format(message, sender, senderMessage, tags));
     }
 
     public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {
         moduleHandler.checkChannelMessage(message, sender, tags);
+    }
+
+    protected void onUserstateWithTags(String channel, HashMap<String, String> tags) {
+        if (channel.equalsIgnoreCase(channel))
+            if (tags.get("mod").equals("1")) this.setMessageDelay(750);
+            else this.setMessageDelay(3000);
+    }
+
+    private String readFromShellCommand(String command) {
+        try {
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            StringBuilder stringBuilder = new StringBuilder();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = bufferedReader.readLine()) != null)
+                stringBuilder.append(line);
+            bufferedReader.close();
+
+            return stringBuilder.toString();
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public ModuleHandler getModuleHandler() {
@@ -147,5 +183,21 @@ public class ChannelBot extends PircBot {
 
     public String getChannel() {
         return channel;
+    }
+
+    public String getCommitHash() {
+        return commitHash;
+    }
+
+    public int getCommitNumber() {
+        return commitNumber;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getBranch() {
+        return branch;
     }
 }
