@@ -2,30 +2,19 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries
-.idea/vcs.xml
-.idea/jsLibraryMappings.xml
+.idea/
 
 # Sensitive or high-churn files:
 *.properties
-!gradle/wrapper/gradle-wrapper.properties
 *.commands
-.idea/dataSources.ids
-.idea/dataSources.xml
-.idea/dataSources.local.xml
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
 
 # Gradle:
-.idea/gradle.xml
 .gradle/
 build/
-
-# Mongo Explorer plugin:
-.idea/mongoSettings.xml
+gradle-app.setting
+.gradletasknamecache
+!gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 
 ## File-based project format:
 *.iws
@@ -34,6 +23,14 @@ build/
 
 # IntelliJ
 /out/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Java #
+*.class
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
