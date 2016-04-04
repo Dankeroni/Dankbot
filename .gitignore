@@ -13,8 +13,6 @@
 build/
 gradle-app.setting
 .gradletasknamecache
-!gradle-wrapper.jar
-!gradle/wrapper/gradle-wrapper.properties
 
 ## File-based project format:
 *.iws
@@ -43,3 +41,6 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
