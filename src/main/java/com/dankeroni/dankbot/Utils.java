@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Utils {
 
-    private static ChannelBot channelBot;
-    private static Config config;
+    public static ChannelBot channelBot;
+    public static Config config;
 
     public static void setChannelBot(ChannelBot channelBot) {
         Utils.channelBot = channelBot;

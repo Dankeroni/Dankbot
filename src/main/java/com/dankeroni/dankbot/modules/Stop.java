@@ -12,15 +12,15 @@ public class Stop extends Module {
         super(channelBot);
     }
 
-    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
+    public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         return check(message, sender);
     }
 
-    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
+    public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         return check(message, sender);
     }
 
-    protected boolean check(String message, String sender) {
+    public boolean check(String message, String sender) {
         if (!Utils.detectCommand(message, "!stop")) return false;
 
         if (sender.equalsIgnoreCase(channelBot.getAdmin())) {
@@ -30,7 +30,7 @@ public class Stop extends Module {
         return true;
     }
 
-    private void stopBot() {
+    public void stopBot() {
         if (!channelBot.isSilentJoinLeave()) {
             String commitHash = channelBot.getCommitHash();
             int commitNumber = channelBot.getCommitNumber();

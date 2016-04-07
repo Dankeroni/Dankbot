@@ -8,24 +8,23 @@ import java.util.HashMap;
 
 public class WhisperBot extends PircBot {
 
-    private ChannelBot channelBot;
-    private String botName, oauth, admin, channel;
-    private boolean superCommand, twitchChat, running = false;
-    private ModuleHandler moduleHandler;
+    public ChannelBot channelBot;
+    public String botName, oauth, admin, channel;
+    public boolean twitchChat, running = false;
+    public ModuleHandler moduleHandler;
 
-    public WhisperBot(ChannelBot channelBot, String botName, String oauth, String admin, String channel, boolean superCommands, boolean twitchChat, ModuleHandler moduleHandler) {
+    public WhisperBot(ChannelBot channelBot, String botName, String oauth, String admin, String channel, boolean twitchChat, ModuleHandler moduleHandler) {
         this.channelBot = channelBot;
         this.botName = botName;
         this.oauth = oauth;
         this.admin = admin;
         this.channel = channel;
-        this.superCommand = superCommands;
         this.twitchChat = twitchChat;
         this.moduleHandler = moduleHandler;
         start();
     }
 
-    private void start(){
+    public void start() {
         if(running)
             return;
 

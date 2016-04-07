@@ -2,7 +2,7 @@ package com.dankeroni.dankbot;
 
 public class Command {
 
-    private String response;
+    public String response;
 
     public Command(String response) {
         this.response = response;

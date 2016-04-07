@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class CommandHandler {
 
-    private ChannelBot channelBot;
-    private HashMap<String, Command> commands = new HashMap<>();
+    public ChannelBot channelBot;
+    public HashMap<String, Command> commands = new HashMap<>();
 
     public CommandHandler(ChannelBot channelBot) {
         this.channelBot = channelBot;

@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 
 public class CustomCommands extends Module {
 
-    private CommandHandler commandHandler = new CommandHandler(channelBot);
-    private Path commandFile = Paths.get(channelBot.getPath() + "config.commands");
-    private File commandFile2 = new File(channelBot.getPath() + "config.commands");
-    private boolean commandFileExists;
+    public CommandHandler commandHandler = new CommandHandler(channelBot);
+    public Path commandFile = Paths.get(channelBot.getPath() + "config.commands");
+    public File commandFile2 = new File(channelBot.getPath() + "config.commands");
+    public boolean commandFileExists;
 
     public CustomCommands(ChannelBot channelBot) {
         super(channelBot);
@@ -37,15 +37,15 @@ public class CustomCommands extends Module {
         }
     }
 
-    protected boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
+    public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
         return commandHandler.checkChannelMessage(message, sender, tags) || check(message, sender);
     }
 
-    protected boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
+    public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         return commandHandler.checkWhisperMessage(message, sender, tags) || check(message, sender);
     }
 
-    private boolean check(String message, String sender) {
+    public boolean check(String message, String sender) {
         if (Utils.detectCommand(message, "!rawcom")) {
             try {
                 channelBot.channelMessage(commandHandler.getCommands().get(Utils.makeArgs(message)[0]).getResponse());
@@ -70,14 +70,14 @@ public class CustomCommands extends Module {
         }
     }
 
-    private boolean addCustomCommand(String message) {
+    public boolean addCustomCommand(String message) {
         String[] words = message.split(" ", 3);
         String commandName = words[1];
         String response = words[2];
         return commandName.trim().isEmpty() || response.trim().isEmpty() || commandHandler.addCommand(commandName, new Command(response));
     }
 
-    private void addCustomCommandToConfig(String message) {
+    public void addCustomCommandToConfig(String message) {
         if (commandFileExists && addCustomCommand(message)) {
             try {
                 Files.write(commandFile, (String.join(" ", (CharSequence[]) Utils.makeArgs(message)) + "\n").getBytes(), StandardOpenOption.APPEND);
@@ -87,7 +87,7 @@ public class CustomCommands extends Module {
         }
     }
 
-    private void removeCustomCommand(String message) {
+    public void removeCustomCommand(String message) {
         String commandName = message.split(" ")[1];
         if (!commandFileExists || !commandHandler.removeCommand(commandName)) return;
 

@@ -24,9 +24,6 @@ twitchChat = true
 #Join and leave channels silently(true or false)
 silentJoinLeave = false
 
-#Advanced commands(true or false)
-superCommands = false
-
 
 #[Variables for custom command formatting(true or false)]
 
@@ -42,3 +39,4 @@ superCommands = false
 #[Modules(true or false}
 
 CustomCommands = true
+Eval = false

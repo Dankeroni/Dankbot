@@ -2,6 +2,7 @@ package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.Servers;
 import com.dankeroni.dankbot.modules.CustomCommands;
+import com.dankeroni.dankbot.modules.Eval;
 import com.dankeroni.dankbot.modules.Stop;
 import com.google.gson.Gson;
 import org.jibble.pircbot.IrcException;
@@ -14,14 +15,17 @@ import java.util.HashMap;
 
 public class ChannelBot extends PircBot {
 
-    private long timeStarted = System.currentTimeMillis();
-    private String botName, oauth, admin, channel, commitHash, branch, path;
-    private String[] trustedUsers;
-    private boolean silentJoinLeave, superCommands, twitchChat, running = false;
-    private ModuleHandler moduleHandler = new ModuleHandler();
-    private WhisperBot whisperBot;
-    private Config config;
-    private int commitNumber;
+    public long timeStarted = System.currentTimeMillis();
+    public String botName, oauth, admin, channel, commitHash, branch, path;
+    public String[] trustedUsers;
+    public boolean silentJoinLeave, twitchChat, running = false;
+    public ModuleHandler moduleHandler = new ModuleHandler();
+    public WhisperBot whisperBot;
+    public Config config;
+    public int commitNumber;
+    public CustomCommands customCommands;
+    public Stop stop;
+    public Eval eval;
 
     public ChannelBot(String path) {
         this.path = path;
@@ -36,7 +40,7 @@ public class ChannelBot extends PircBot {
         }
     }
 
-    private void start(){
+    public void start() {
         if(running)
             return;
 
@@ -58,7 +62,6 @@ public class ChannelBot extends PircBot {
         channel = "#" + config.getString("channel").toLowerCase();
 
         silentJoinLeave = config.getBoolean("silentJoinLeave");
-        superCommands = config.getBoolean("superCommands");
         twitchChat = config.getBoolean("twitchChat", false);
 
         System.out.println("Dankbot starting!");
@@ -100,10 +103,9 @@ public class ChannelBot extends PircBot {
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 
-        whisperBot = new WhisperBot(this, botName, oauth, admin, channel, superCommands, twitchChat, moduleHandler);
+        whisperBot = new WhisperBot(this, botName, oauth, admin, channel, twitchChat, moduleHandler);
 
-        moduleHandler.addModule(new CustomCommands(this));
-        moduleHandler.addModule(new Stop(this));
+        this.loadModules();
 
         if (!silentJoinLeave) {
             try {
@@ -116,6 +118,16 @@ public class ChannelBot extends PircBot {
                 this.channelMessage("/me joining MrDestructoid");
             }
         }
+    }
+
+    public void loadModules() {
+        moduleHandler.addModule(stop = new Stop(this));
+
+        if (config.getBoolean("CustomCommands", true))
+            moduleHandler.addModule(customCommands = new CustomCommands(this));
+
+        if (config.getBoolean("Eval", false))
+            moduleHandler.addModule(eval = new Eval(this));
     }
 
     public void channelMessage(String message){
@@ -131,13 +143,13 @@ public class ChannelBot extends PircBot {
         moduleHandler.checkChannelMessage(message, sender, tags);
     }
 
-    protected void onUserstateWithTags(String channel, HashMap<String, String> tags) {
+    public void onUserstateWithTags(String channel, HashMap<String, String> tags) {
         if (channel.equalsIgnoreCase(channel))
             if (tags.get("mod").equals("1")) this.setMessageDelay(750);
             else this.setMessageDelay(3000);
     }
 
-    private String readFromShellCommand(String command) {
+    public String readFromShellCommand(String command) {
         try {
             Process process = Runtime.getRuntime().exec(command);
             process.waitFor();
@@ -197,5 +209,17 @@ public class ChannelBot extends PircBot {
 
     public String getBranch() {
         return branch;
+    }
+
+    public CustomCommands getCustomCommands() {
+        return customCommands;
+    }
+
+    public Stop getStop() {
+        return stop;
+    }
+
+    public Eval getEval() {
+        return eval;
     }
 }

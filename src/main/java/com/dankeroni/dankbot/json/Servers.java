@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class Servers {
 
-    private String cluster;
-    private String[] servers, websocket_servers;
-    private Random r = new Random();
+    public String cluster;
+    public String[] servers, websocket_servers;
+    public Random r = new Random();
 
     public String randomServer(){
         Collections.shuffle(Arrays.asList(servers));

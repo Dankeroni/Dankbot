@@ -6,9 +6,9 @@ import java.util.Properties;
 
 public class Config {
 
-    private Properties properties;
-    private String file;
-    private String[] requiredOptions;
+    public Properties properties;
+    public String file;
+    public String[] requiredOptions;
 
     public Config(String file) {
         this.file = file;
