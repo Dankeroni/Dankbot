@@ -100,7 +100,7 @@ public class CustomCommands extends Module {
             String currentLine;
 
             while ((currentLine = reader.readLine()) != null) {
-                if (currentLine.startsWith(commandName + " ")) continue;
+                if (Utils.detectCommand(currentLine, commandName)) continue;
                 writer.write(currentLine + System.getProperty("line.separator"));
             }
             writer.close();

@@ -24,7 +24,7 @@ public class CommandHandler {
     public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
         for (HashMap.Entry<String, Command> command : commands.entrySet()) {
             if (Utils.detectCommand(message, command.getKey())) {
-                channelBot.getWhisperBot().formattedWhisperMessage(command.getValue().getResponse(), sender, message, tags);
+                channelBot.formattedWhisperMessage(command.getValue().getResponse(), sender, message, tags);
                 return true;
             }
         }

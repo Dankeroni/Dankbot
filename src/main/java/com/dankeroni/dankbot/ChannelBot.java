@@ -20,7 +20,6 @@ public class ChannelBot extends PircBot {
     public String[] trustedUsers;
     public boolean silentJoinLeave, twitchChat, running = false;
     public ModuleHandler moduleHandler = new ModuleHandler();
-    public WhisperBot whisperBot;
     public Config config;
     public int commitNumber;
     public CustomCommands customCommands;
@@ -30,6 +29,12 @@ public class ChannelBot extends PircBot {
     public ChannelBot(String path) {
         this.path = path;
         start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                stop.stopBot();
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -46,12 +51,12 @@ public class ChannelBot extends PircBot {
 
         running = true;
 
-        config = new Config(path + "config.properties");
+        config = new Config(this, path + "config.properties");
         config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
         config.loadConfig();
 
         if (!config.containsRequiredOptions()) {
-            System.out.printf("Your config file must contain the following values: %s", String.join(", ", (CharSequence[]) config.getRequiredOptions()));
+            this.log(String.format("Your config file must contain the following values: %s", String.join(", ", (CharSequence[]) config.getRequiredOptions())));
             System.exit(1);
         }
 
@@ -64,10 +69,10 @@ public class ChannelBot extends PircBot {
         silentJoinLeave = config.getBoolean("silentJoinLeave");
         twitchChat = config.getBoolean("twitchChat", false);
 
-        System.out.println("Dankbot starting!");
-        System.out.println("Botname: " + config.getString("botName"));
-        System.out.println("Channel: " + config.getString("channel"));
-        System.out.println("Admin: " + config.getString("admin"));
+        this.log("Dankbot starting!");
+        this.log("Botname: " + config.getString("botName"));
+        this.log("Channel: " + config.getString("channel"));
+        this.log("Admin: " + config.getString("admin"));
 
         Utils.setChannelBot(this);
         setName(botName);
@@ -83,7 +88,7 @@ public class ChannelBot extends PircBot {
             port = Integer.parseInt(ipAndPort[1]);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("There was a problem fetching the chat server list, using default server");
+            this.log("There was a problem fetching the chat server list, using default server");
         }
 
         int tries = 0;
@@ -92,7 +97,7 @@ public class ChannelBot extends PircBot {
             try {
                 connect(ip, port, oauth);
             } catch (IOException | IrcException e) {
-                System.out.println("Twitch chat servers offline/Check your internet connection/firewall");
+                this.log("Twitch chat servers offline/Check your internet connection/firewall");
                 e.printStackTrace();
                 return;
             }
@@ -102,8 +107,6 @@ public class ChannelBot extends PircBot {
 
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
-
-        whisperBot = new WhisperBot(this, botName, oauth, admin, channel, twitchChat, moduleHandler);
 
         this.loadModules();
 
@@ -149,6 +152,19 @@ public class ChannelBot extends PircBot {
             else this.setMessageDelay(3000);
     }
 
+    public void whisperMessage(String user, String message) {
+        if (message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
+            sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
+    }
+
+    public void formattedWhisperMessage(String message, String user, String senderMessage, HashMap<String, String> tags) {
+        this.whisperMessage(user, Utils.format(message, user, senderMessage, tags));
+    }
+
+    public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {
+        moduleHandler.checkWhisperMessage(message, sender, tags);
+    }
+
     public String readFromShellCommand(String command) {
         try {
             Process process = Runtime.getRuntime().exec(command);
@@ -185,10 +201,6 @@ public class ChannelBot extends PircBot {
 
     public boolean isSilentJoinLeave() {
         return silentJoinLeave;
-    }
-
-    public WhisperBot getWhisperBot() {
-        return whisperBot;
     }
 
     public String getChannel() {

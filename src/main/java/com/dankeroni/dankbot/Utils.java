@@ -43,7 +43,9 @@ public class Utils {
     }
 
     public static boolean detectCommand(String message, String command) {
-        return message.equalsIgnoreCase(command) || message.startsWith(command + " ");
+        message = message.toLowerCase();
+        command = command.toLowerCase();
+        return message.equals(command) || message.startsWith(command + " ");
     }
 
     public static String[] makeArgs(String message) {

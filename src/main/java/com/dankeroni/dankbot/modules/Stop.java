@@ -50,8 +50,5 @@ public class Stop extends Module {
 
         channelBot.disconnect();
         channelBot.dispose();
-        channelBot.getWhisperBot().disconnect();
-        channelBot.getWhisperBot().dispose();
-        System.exit(0);
     }
 }
