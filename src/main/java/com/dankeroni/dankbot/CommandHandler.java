@@ -31,11 +31,12 @@ public class CommandHandler {
         return false;
     }
 
-    public boolean addCommand(String commandString, Command command) {
+    public boolean addCommand(String commandString, Command command, boolean log) {
         if (commands.containsKey(commandString)) {
             return false;
         } else {
             commands.put(commandString, command);
+            if (log) channelBot.log("Added command \"" + commandString + "\"");
             return true;
         }
     }
@@ -43,6 +44,7 @@ public class CommandHandler {
     public boolean removeCommand(String commandName) {
         if (commands.containsKey(commandName)) {
             commands.remove(commandName);
+            channelBot.log("Removed command \"" + commandName + "\"");
             return true;
         } else {
             return false;

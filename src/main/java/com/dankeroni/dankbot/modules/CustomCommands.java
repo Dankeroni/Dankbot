@@ -22,8 +22,9 @@ public class CustomCommands extends Module {
 
         if (commandFile2.exists()) {
             commandFileExists = true;
+            channelBot.log("Loading custom commands", LogLevel.DEBUG);
             try (Stream<String> lines = Files.lines(commandFile)) {
-                lines.forEachOrdered(line -> this.addCustomCommand("!addcom " + line));
+                lines.forEachOrdered(line -> this.addCustomCommand("!addcom " + line, false));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -73,10 +74,14 @@ public class CustomCommands extends Module {
     }
 
     public boolean addCustomCommand(String message) {
+        return addCustomCommand(message, true);
+    }
+
+    public boolean addCustomCommand(String message, boolean log) {
         String[] words = message.split(" ", 3);
         String commandName = words[1];
         String response = words[2];
-        return commandName.trim().isEmpty() || response.trim().isEmpty() || commandHandler.addCommand(commandName, new Command(response));
+        return commandName.trim().isEmpty() || response.trim().isEmpty() || commandHandler.addCommand(commandName, new Command(response), log);
     }
 
     public void addCustomCommandToConfig(String message) {

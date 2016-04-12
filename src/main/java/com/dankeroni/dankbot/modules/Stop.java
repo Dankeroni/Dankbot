@@ -32,6 +32,7 @@ public class Stop extends Module {
     }
 
     public void stopBot() {
+        channelBot.log("Dankbot stopping!", LogLevel.INFO);
         if (!channelBot.isSilentJoinLeave()) {
             String commitHash = channelBot.getCommitHash();
             int commitNumber = channelBot.getCommitNumber();
@@ -50,7 +51,6 @@ public class Stop extends Module {
         }
 
         channelBot.disconnect();
-        channelBot.log("Dankbot stopping!", LogLevel.INFO);
         channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
         channelBot.dispose();
         Runtime.getRuntime().halt(0);

@@ -20,7 +20,7 @@ public class ChannelBot extends PircBot {
     public long timeStarted = System.currentTimeMillis();
     public String botName, oauth, admin, channel, commitHash, branch, path;
     public String[] trustedUsers;
-    public boolean silentJoinLeave, twitchChat, running = false;
+    public boolean silentJoinLeave, twitchChat, running = false, modded;
     public ModuleHandler moduleHandler = new ModuleHandler();
     public Config config;
     public int commitNumber;
@@ -53,9 +53,12 @@ public class ChannelBot extends PircBot {
 
         running = true;
         AnsiConsole.systemInstall();
+        this.log(String.format("Log start: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
+        this.log("Dankbot starting!", LogLevel.INFO);
 
         config = new Config(this, path + "config.properties");
         config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
+        this.log("Loading config file", LogLevel.DEBUG);
         config.loadConfig();
 
         if (!config.containsRequiredOptions()) {
@@ -72,8 +75,6 @@ public class ChannelBot extends PircBot {
         silentJoinLeave = config.getBoolean("silentJoinLeave");
         twitchChat = config.getBoolean("twitchChat", false);
 
-        this.log(String.format("Log start: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
-        this.log("Dankbot starting!", LogLevel.INFO);
         this.log("Botname: " + config.getString("botName"), LogLevel.DEBUG);
         this.log("Channel: " + config.getString("channel"), LogLevel.DEBUG);
         this.log("Admin: " + config.getString("admin"), LogLevel.DEBUG);
@@ -112,8 +113,10 @@ public class ChannelBot extends PircBot {
         }
 
         joinChannel(channel);
+        this.log("Joined channel", LogLevel.DEBUG);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
 
+        this.log("Loading modules", LogLevel.DEBUG);
         this.loadModules();
 
         if (!silentJoinLeave) {
@@ -153,9 +156,17 @@ public class ChannelBot extends PircBot {
     }
 
     public void onUserstateWithTags(String channel, HashMap<String, String> tags) {
-        if (channel.equalsIgnoreCase(channel))
-            if (tags.get("mod").equals("1")) this.setMessageDelay(750);
-            else this.setMessageDelay(3000);
+        if (channel.equalsIgnoreCase(channel)) {
+            boolean currentModded;
+            currentModded = tags.get("mod").equals("1");
+
+            if (currentModded != this.modded) {
+                if (currentModded) this.setMessageDelay(750);
+                else this.setMessageDelay(3000);
+                this.modded = currentModded;
+                this.log("Mod status set", LogLevel.DEBUG);
+            }
+        }
     }
 
     public void whisperMessage(String user, String message) {
