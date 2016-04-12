@@ -29,9 +29,11 @@ public class CustomCommands extends Module {
             }
         } else {
             try {
+                channelBot.log("Commands file not found, generating new one", LogLevel.INFO);
                 commandFileExists = commandFile2.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
+                channelBot.log("Unable to generate commands file, custom commands will not work until you fix the problem and restart the bot!", LogLevel.WARN);
                 commandFileExists = false;
             }
         }
@@ -107,10 +109,10 @@ public class CustomCommands extends Module {
             reader.close();
             Files.deleteIfExists(commandFile);
             if (!tempFile.renameTo(commandFile2))
-                channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually");
+                channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         } catch (IOException e) {
             e.printStackTrace();
-            channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually");
+            channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         }
     }
 }

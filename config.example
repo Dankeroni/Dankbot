@@ -30,10 +30,15 @@ silentJoinLeave = false
 {sender} = true
 {realsender} = true
 {time} = true
+{detailedtime} = true
+{date} = true
 {botuptime} = true
+{botname} = true
 {commitHash} = true
 {commitNumber} = true
 {branch} = true
+{admin} = true
+{channel} = true
 
 
 #[Modules(true or false}

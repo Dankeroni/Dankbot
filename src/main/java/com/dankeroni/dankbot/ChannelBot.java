@@ -5,6 +5,8 @@ import com.dankeroni.dankbot.modules.CustomCommands;
 import com.dankeroni.dankbot.modules.Eval;
 import com.dankeroni.dankbot.modules.Stop;
 import com.google.gson.Gson;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
@@ -46,18 +48,19 @@ public class ChannelBot extends PircBot {
     }
 
     public void start() {
-        if(running)
+        if (running)
             return;
 
         running = true;
+        AnsiConsole.systemInstall();
 
         config = new Config(this, path + "config.properties");
         config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
         config.loadConfig();
 
         if (!config.containsRequiredOptions()) {
-            this.log(String.format("Your config file must contain the following values: %s", String.join(", ", (CharSequence[]) config.getRequiredOptions())));
-            System.exit(1);
+            this.log(String.format("Your config file must contain the following values: %s", String.join(", ", (CharSequence[]) config.getRequiredOptions())), LogLevel.ERROR);
+            return;
         }
 
         botName = config.getString("botName").toLowerCase();
@@ -69,16 +72,17 @@ public class ChannelBot extends PircBot {
         silentJoinLeave = config.getBoolean("silentJoinLeave");
         twitchChat = config.getBoolean("twitchChat", false);
 
-        this.log("Dankbot starting!");
-        this.log("Botname: " + config.getString("botName"));
-        this.log("Channel: " + config.getString("channel"));
-        this.log("Admin: " + config.getString("admin"));
+        this.log(String.format("Log start: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
+        this.log("Dankbot starting!", LogLevel.INFO);
+        this.log("Botname: " + config.getString("botName"), LogLevel.DEBUG);
+        this.log("Channel: " + config.getString("channel"), LogLevel.DEBUG);
+        this.log("Admin: " + config.getString("admin"), LogLevel.DEBUG);
 
         Utils.setChannelBot(this);
         setName(botName);
-        setVerbose(twitchChat);
+        setVerbose(true);
 
-        String ip = "irc.tchat.twitch.tv";
+        String ip = "irc.chat.twitch.tv";
         int port = 80;
 
         try {
@@ -88,7 +92,7 @@ public class ChannelBot extends PircBot {
             port = Integer.parseInt(ipAndPort[1]);
         } catch (Exception e) {
             e.printStackTrace();
-            this.log("There was a problem fetching the chat server list, using default server");
+            this.log("There was a problem fetching the chat server list, using default server", LogLevel.WARN);
         }
 
         int tries = 0;
@@ -97,13 +101,15 @@ public class ChannelBot extends PircBot {
             try {
                 connect(ip, port, oauth);
             } catch (IOException | IrcException e) {
-                this.log("Twitch chat servers offline/Check your internet connection/firewall");
+                this.log("Twitch chat servers offline/Check your internet connection/firewall", LogLevel.ERROR);
                 e.printStackTrace();
-                return;
             }
         }
 
-        if (!isConnected()) this.log("Chat servers down!");
+        if (!isConnected()) {
+            this.log("Chat servers down!", LogLevel.ERROR);
+            return;
+        }
 
         joinChannel(channel);
         sendRawLineViaQueue("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
@@ -133,7 +139,7 @@ public class ChannelBot extends PircBot {
             moduleHandler.addModule(eval = new Eval(this));
     }
 
-    public void channelMessage(String message){
+    public void channelMessage(String message) {
         if (message != null && !message.trim().isEmpty())
             sendMessage(channel, message + " ");
     }
@@ -183,11 +189,49 @@ public class ChannelBot extends PircBot {
         }
     }
 
+    public void log(String line) {
+        if (line.startsWith("###"))
+            this.log(line.substring(3), LogLevel.ERROR);
+        else if (line.startsWith("***"))
+            this.log(line.substring(3), LogLevel.INFO);
+        else
+            this.log(line, LogLevel.TRACE);
+    }
+
+    public void log(String line, LogLevel logLevel) {
+        line = line.trim();
+        if (line.isEmpty()) return;
+        Ansi ansi = Ansi.ansi();
+
+        switch (logLevel) {
+            case TRACE:
+                if (twitchChat)
+                    System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.WHITE).a("[TRACE]").reset() + " " + line);
+                break;
+
+            case DEBUG:
+                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.CYAN).a("[DEBUG]").reset() + " " + line);
+                break;
+
+            case INFO:
+                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.GREEN).a("[INFO]").reset() + " " + line);
+                break;
+
+            case WARN:
+                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.YELLOW).a("[WARN]").reset() + " " + line);
+                break;
+
+            case ERROR:
+                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.RED).a("[ERROR]").reset() + " " + line);
+                break;
+        }
+    }
+
     public ModuleHandler getModuleHandler() {
         return moduleHandler;
     }
 
-    public long getTimeStarted(){
+    public long getTimeStarted() {
         return timeStarted;
     }
 

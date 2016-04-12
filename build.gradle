@@ -13,6 +13,7 @@ repositories {
 dependencies {
     compile "com.google.code.gson:gson:2.6.2"
     compile "org.beanshell:bsh:2.0b5"
+    compile 'org.fusesource.jansi:jansi:1.11'
 }
 
 jar {

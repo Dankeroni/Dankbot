@@ -22,7 +22,7 @@ public class Config {
             properties.load(reader);
         } catch(IOException e){
             e.printStackTrace();
-            channelBot.log("config.properties not found!");
+            channelBot.log("config.properties not found!", LogLevel.ERROR);
         }
     }
 

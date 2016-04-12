@@ -1,6 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Module;
 import com.dankeroni.dankbot.Utils;
 
@@ -49,6 +50,9 @@ public class Stop extends Module {
         }
 
         channelBot.disconnect();
+        channelBot.log("Dankbot stopping!", LogLevel.INFO);
+        channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
         channelBot.dispose();
+        Runtime.getRuntime().halt(0);
     }
 }
