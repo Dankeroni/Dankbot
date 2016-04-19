@@ -12,13 +12,13 @@ import java.util.stream.Stream;
 
 public class CustomCommands extends Module {
 
-    public CommandHandler commandHandler = new CommandHandler(channelBot);
     public Path commandFile = Paths.get(channelBot.getPath() + "config.commands");
     public File commandFile2 = new File(channelBot.getPath() + "config.commands");
     public boolean commandFileExists;
 
     public CustomCommands(ChannelBot channelBot) {
         super(channelBot);
+
 
         if (commandFile2.exists()) {
             commandFileExists = true;
@@ -38,40 +38,20 @@ public class CustomCommands extends Module {
                 commandFileExists = false;
             }
         }
+
+        commands.addCommand(new Command("!rawcom", this::rawCommand, null, AccessLevel.USER, 2, 4), false);
+        commands.addCommand(new Command("!addcom", this::addCustomCommandToConfig, null, AccessLevel.SUPERMODERATOR, 1, 1), false);
+        commands.addCommand(new Command("!removecom", this::removeCustomCommand, null, AccessLevel.SUPERMODERATOR, 1, 1), false);
     }
 
-    public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
-        return commandHandler.checkChannelMessage(message, sender, tags) || check(message, sender);
-    }
-
-    public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
-        return commandHandler.checkWhisperMessage(message, sender, tags) || check(message, sender);
-    }
-
-    public boolean check(String message, String sender) {
-        if (Utils.detectCommand(message, "!rawcom")) {
-            try {
-                channelBot.channelMessage(commandHandler.getCommands().get(Utils.makeArgs(message)[0]).getResponse());
-                return true;
-            } catch (NullPointerException e) {
-                channelBot.channelMessage("This command doesn't exist!");
-            }
-        }
-
-        if (!sender.equalsIgnoreCase(channelBot.getAdmin())) return false;
-
-        if (Utils.detectCommand(message, "!addcom")) {
-            this.addCustomCommandToConfig(message);
-            return true;
-
-        } else if (Utils.detectCommand(message, "!removecom")) {
-            this.removeCustomCommand(message);
-            return true;
-
-        } else {
-            return false;
+    public void rawCommand(String message, String sender, HashMap<String, String> tags) {
+        try {
+            channelBot.channelMessage(commands.getCommands().get(Utils.makeArgs(message)[0]).getResponse());
+        } catch (NullPointerException e) {
+            channelBot.channelMessage("This command doesn't exist!");
         }
     }
+
 
     public boolean addCustomCommand(String message) {
         return addCustomCommand(message, true);
@@ -79,12 +59,12 @@ public class CustomCommands extends Module {
 
     public boolean addCustomCommand(String message, boolean log) {
         String[] words = message.split(" ", 3);
-        String commandName = words[1];
+        String command = words[1];
         String response = words[2];
-        return commandName.trim().isEmpty() || response.trim().isEmpty() || commandHandler.addCommand(commandName, new Command(response), log);
+        return command.isEmpty() || response.isEmpty() || commands.addCommand(new Command(command, null, response, AccessLevel.USER, 4, 10), log);
     }
 
-    public void addCustomCommandToConfig(String message) {
+    public void addCustomCommandToConfig(String message, String sender, HashMap<String, String> tags) {
         if (commandFileExists && addCustomCommand(message)) {
             try {
                 Files.write(commandFile, (String.join(" ", (CharSequence[]) Utils.makeArgs(message)) + "\n").getBytes(), StandardOpenOption.APPEND);
@@ -94,9 +74,9 @@ public class CustomCommands extends Module {
         }
     }
 
-    public void removeCustomCommand(String message) {
+    public void removeCustomCommand(String message, String sender, HashMap<String, String> tags) {
         String commandName = message.split(" ")[1];
-        if (!commandFileExists || !commandHandler.removeCommand(commandName)) return;
+        if (!commandFileExists || !commands.removeCommand(commandName)) return;
 
         File tempFile = new File(channelBot.getPath() + "config_temp.commands");
 
@@ -114,10 +94,10 @@ public class CustomCommands extends Module {
             reader.close();
             Files.deleteIfExists(commandFile);
             if (!tempFile.renameTo(commandFile2))
-                channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
+                channelBot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         } catch (IOException e) {
             e.printStackTrace();
-            channelBot.log("ERROR: Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
+            channelBot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         }
     }
 }

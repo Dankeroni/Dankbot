@@ -10,11 +10,11 @@ public class Servers {
     public String[] servers, websocket_servers;
     public Random r = new Random();
 
-    public String randomServer(){
+    public String randomServer() {
         Collections.shuffle(Arrays.asList(servers));
 
-        for(String server: servers){
-            if(server.endsWith(String.valueOf(6667)))
+        for (String server : servers) {
+            if (server.endsWith(String.valueOf(6667)))
                 return server;
         }
 

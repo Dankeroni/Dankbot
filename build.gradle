@@ -1,9 +1,6 @@
-plugins {
-    id "java"
-    id "com.scuilion.syntastic" version "0.3.6"
-}
+apply plugin: "java"
 
-group 'com.dankeroni'
+group "com.dankeroni"
 sourceCompatibility = 8
 
 repositories {
@@ -13,7 +10,7 @@ repositories {
 dependencies {
     compile "com.google.code.gson:gson:2.6.2"
     compile "org.beanshell:bsh:2.0b5"
-    compile 'org.fusesource.jansi:jansi:1.11'
+    compile "org.fusesource.jansi:jansi:1.11"
 }
 
 jar {

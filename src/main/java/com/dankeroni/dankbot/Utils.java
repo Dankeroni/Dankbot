@@ -31,9 +31,9 @@ public class Utils {
     }
 
     public static int clamp(int var, int min, int max) {
-        if(var >= max)
+        if (var >= max)
             return max;
-        else if(var <= min)
+        else if (var <= min)
             return min;
         else
             return var;
@@ -68,7 +68,7 @@ public class Utils {
     }
 
     public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags, boolean considerConfig) {
-        if(message.contains("{") && message.contains("}")) {
+        if (message.contains("{") && message.contains("}")) {
             String[] messageArgs = makeArgs(senderMessage);
             for (int i2 = 0; i2 < 10; i2++)
                 args.put("{arg" + String.valueOf(i2) + "}", null);
@@ -104,7 +104,7 @@ public class Utils {
                 }
 
                 if (message.contains(key) && (!considerConfig || config.getBoolean(key, true)))
-                    if(value != null && !value.trim().isEmpty()) {
+                    if (value != null && !value.trim().isEmpty()) {
                         message = message.replace(key, value);
                     } else {
                         return tags.get("display-name") + ", invalid arguments";
@@ -112,6 +112,10 @@ public class Utils {
             }
         }
         return message;
+    }
+
+    public static boolean checkAccessLevel(String user, AccessLevel accessLevel) {
+        return channelBot.getUserAccessLevels().getOrDefault(user, AccessLevel.USER).compareTo(accessLevel) <= 0;
     }
 
     public static String time() {

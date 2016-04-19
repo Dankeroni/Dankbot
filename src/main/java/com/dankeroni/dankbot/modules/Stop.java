@@ -1,9 +1,6 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.ChannelBot;
-import com.dankeroni.dankbot.LogLevel;
-import com.dankeroni.dankbot.Module;
-import com.dankeroni.dankbot.Utils;
+import com.dankeroni.dankbot.*;
 
 import java.util.HashMap;
 
@@ -11,27 +8,15 @@ public class Stop extends Module {
 
     public Stop(ChannelBot channelBot) {
         super(channelBot);
+
+        commands.addCommand(new Command("!stop", this::stop, null, AccessLevel.ADMIN, 5, 5), false);
     }
 
-    public boolean checkChannelMessage(String message, String sender, HashMap<String, String> tags) {
-        return check(message, sender);
+    public void stop() {
+        this.stop(null, null, null);
     }
 
-    public boolean checkWhisperMessage(String message, String sender, HashMap<String, String> tags) {
-        return check(message, sender);
-    }
-
-    public boolean check(String message, String sender) {
-        if (!Utils.detectCommand(message, "!stop")) return false;
-
-        if (sender.equalsIgnoreCase(channelBot.getAdmin())) {
-            this.stopBot();
-        }
-
-        return true;
-    }
-
-    public void stopBot() {
+    public void stop(String message, String sender, HashMap<String, String> tags) {
         channelBot.log("Dankbot stopping!", LogLevel.INFO);
         if (!channelBot.isSilentJoinLeave()) {
             String commitHash = channelBot.getCommitHash();
@@ -53,6 +38,5 @@ public class Stop extends Module {
         channelBot.disconnect();
         channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
         channelBot.dispose();
-        Runtime.getRuntime().halt(0);
     }
 }

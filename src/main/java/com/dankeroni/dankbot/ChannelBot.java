@@ -1,6 +1,7 @@
 package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.Servers;
+import com.dankeroni.dankbot.modules.Commands;
 import com.dankeroni.dankbot.modules.CustomCommands;
 import com.dankeroni.dankbot.modules.Eval;
 import com.dankeroni.dankbot.modules.Stop;
@@ -21,7 +22,9 @@ public class ChannelBot extends PircBot {
     public String botName, oauth, admin, channel, commitHash, branch, path;
     public String[] trustedUsers;
     public boolean silentJoinLeave, twitchChat, running = false, modded;
+    public HashMap<String, AccessLevel> userAccessLevels = new HashMap<>();
     public ModuleHandler moduleHandler = new ModuleHandler();
+    public Commands commands;
     public Config config;
     public int commitNumber;
     public CustomCommands customCommands;
@@ -31,12 +34,6 @@ public class ChannelBot extends PircBot {
     public ChannelBot(String path) {
         this.path = path;
         start();
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                stop.stopBot();
-            }
-        });
     }
 
     public static void main(String[] args) {
@@ -50,6 +47,12 @@ public class ChannelBot extends PircBot {
     public void start() {
         if (running)
             return;
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                stop.stop();
+            }
+        });
 
         running = true;
         AnsiConsole.systemInstall();
@@ -69,7 +72,9 @@ public class ChannelBot extends PircBot {
         botName = config.getString("botName").toLowerCase();
         oauth = config.getString("oauth");
         admin = config.getString("admin").toLowerCase();
+        userAccessLevels.put(admin, AccessLevel.ADMIN);
         trustedUsers = config.getStringArray("trustedUsers");
+        for (String trustedUser : trustedUsers) userAccessLevels.put(trustedUser, AccessLevel.SUPERMODERATOR);
         channel = "#" + config.getString("channel").toLowerCase();
 
         silentJoinLeave = config.getBoolean("silentJoinLeave");
@@ -133,6 +138,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void loadModules() {
+        moduleHandler.addModule(commands = new Commands(this));
         moduleHandler.addModule(stop = new Stop(this));
 
         if (config.getBoolean("CustomCommands", true))
@@ -152,13 +158,12 @@ public class ChannelBot extends PircBot {
     }
 
     public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        moduleHandler.checkChannelMessage(message, sender, tags);
+        moduleHandler.onChannelMessage(message, sender, tags);
     }
 
     public void onUserstateWithTags(String channel, HashMap<String, String> tags) {
         if (channel.equalsIgnoreCase(channel)) {
-            boolean currentModded;
-            currentModded = tags.get("mod").equals("1");
+            boolean currentModded = tags.get("mod").equals("1");
 
             if (currentModded != this.modded) {
                 if (currentModded) this.setMessageDelay(750);
@@ -179,7 +184,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        moduleHandler.checkWhisperMessage(message, sender, tags);
+        moduleHandler.onWhisperMessage(message, sender, tags);
     }
 
     public String readFromShellCommand(String command) {
@@ -288,5 +293,13 @@ public class ChannelBot extends PircBot {
 
     public Eval getEval() {
         return eval;
+    }
+
+    public Commands getCommands() {
+        return commands;
+    }
+
+    public HashMap<String, AccessLevel> getUserAccessLevels() {
+        return userAccessLevels;
     }
 }
