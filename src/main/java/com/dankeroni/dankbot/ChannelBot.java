@@ -1,10 +1,7 @@
 package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.Servers;
-import com.dankeroni.dankbot.modules.Commands;
-import com.dankeroni.dankbot.modules.CustomCommands;
-import com.dankeroni.dankbot.modules.Eval;
-import com.dankeroni.dankbot.modules.Stop;
+import com.dankeroni.dankbot.modules.*;
 import com.google.gson.Gson;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
@@ -30,6 +27,7 @@ public class ChannelBot extends PircBot {
     public CustomCommands customCommands;
     public Stop stop;
     public Eval eval;
+    public Raffle raffle;
 
     public ChannelBot(String path) {
         this.path = path;
@@ -143,6 +141,9 @@ public class ChannelBot extends PircBot {
 
         if (config.getBoolean("CustomCommands", true))
             moduleHandler.addModule(customCommands = new CustomCommands(this));
+
+        if (config.getBoolean("Raffle", true))
+            moduleHandler.addModule(raffle = new Raffle(this));
 
         if (config.getBoolean("Eval", false))
             moduleHandler.addModule(eval = new Eval(this));

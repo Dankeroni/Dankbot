@@ -41,7 +41,8 @@ silentJoinLeave = false
 {channel} = true
 
 
-#[Modules(true or false}
+#[Modules(true or false)]
 
 CustomCommands = true
+Raffle = true
 Eval = false

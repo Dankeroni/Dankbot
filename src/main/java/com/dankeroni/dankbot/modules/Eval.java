@@ -46,15 +46,13 @@ public class Eval extends Module {
     }
 
     public void evalFromMessage(String message, String sender, HashMap<String, String> tags) {
-        if (sender.equalsIgnoreCase(channelBot.getAdmin())) {
-            String[] messageParts = message.split(" ", 2);
-            if (messageParts.length > 1 && !messageParts[1].isEmpty()) {
-                try {
-                    this.eval(messageParts[1]);
-                } catch (EvalError e) {
-                    channelBot.channelMessage("Failed to evaluate expression");
-                    e.printStackTrace();
-                }
+        String[] messageParts = message.split(" ", 2);
+        if (messageParts.length > 1 && !messageParts[1].isEmpty()) {
+            try {
+                this.eval(messageParts[1]);
+            } catch (EvalError e) {
+                channelBot.channelMessage("Failed to evaluate expression");
+                e.printStackTrace();
             }
         }
     }
