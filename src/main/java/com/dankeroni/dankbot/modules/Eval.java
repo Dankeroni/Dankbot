@@ -17,7 +17,7 @@ public class Eval extends Module {
         BufferedReader commandLineReader = new BufferedReader(new InputStreamReader(System.in));
         String line;
 
-        while (true) {
+        while (channelBot.isRunning()) {
             try {
                 if ((line = commandLineReader.readLine()) != null)
                     this.eval(line);
@@ -42,7 +42,7 @@ public class Eval extends Module {
         commandLine.setDaemon(true);
         commandLine.start();
 
-        commands.addCommand(new Command("!eval", this::evalFromMessage, null, AccessLevel.ADMIN, 0, 0), false);
+        commands.addActionCommand(new ActionCommand("!eval", this::evalFromMessage, AccessLevel.ADMIN, 0, 0));
     }
 
     public void evalFromMessage(String message, String sender, HashMap<String, String> tags) {

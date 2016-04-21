@@ -140,14 +140,21 @@ public class Utils {
         millis -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
-        if (days > 0) {
-            return String.format("%sd %sh %sm %ss", days, hours, minutes, seconds);
-        } else if (hours > 0) {
-            return String.format("%sh %sm %ss", hours, minutes, seconds);
-        } else if (minutes > 0) {
-            return String.format("%sm %ss", minutes, seconds);
-        } else {
-            return String.format("%ss", seconds);
-        }
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (days > 1) stringBuilder.append(days).append(" days and ");
+        else if (days == 1) stringBuilder.append(days).append(" day and ");
+
+        if (hours > 1) stringBuilder.append(hours).append(" hours and ");
+        else if (hours == 1) stringBuilder.append(hours).append(" hour and ");
+
+        if (minutes > 1) stringBuilder.append(minutes).append(" minutes and ");
+        else if (minutes == 1) stringBuilder.append(minutes).append(" minute and ");
+
+        if (seconds > 1) stringBuilder.append(seconds).append(" seconds");
+        else if (seconds == 1) stringBuilder.append(seconds).append(" second");
+
+        String time = stringBuilder.toString().trim();
+        return time.endsWith("and") ? time.substring(0, time.length() - 4) : time;
     }
 }

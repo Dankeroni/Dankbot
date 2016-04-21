@@ -9,7 +9,7 @@ public class Stop extends Module {
     public Stop(ChannelBot channelBot) {
         super(channelBot);
 
-        commands.addCommand(new Command("!stop", this::stop, null, AccessLevel.ADMIN, 5, 5), false);
+        commands.addActionCommand(new ActionCommand("!stop", this::stop, AccessLevel.ADMIN, 5, 5));
     }
 
     public void stop() {
@@ -17,26 +17,27 @@ public class Stop extends Module {
     }
 
     public void stop(String message, String sender, HashMap<String, String> tags) {
+        if (!channelBot.isRunning()) return;
+
         channelBot.log("Dankbot stopping!", LogLevel.INFO);
-        if (!channelBot.isSilentJoinLeave()) {
-            String commitHash = channelBot.getCommitHash();
-            int commitNumber = channelBot.getCommitNumber();
+        String commitHash = channelBot.getCommitHash();
+        int commitNumber = channelBot.getCommitNumber();
 
-            if (!commitHash.trim().isEmpty() && !(commitNumber == 0)) {
-                channelBot.channelMessage("/me commit " + commitHash + " number " + commitNumber + " leaving MrDestructoid");
-            } else {
-                channelBot.channelMessage("/me leaving MrDestructoid");
-            }
+        if (!commitHash.trim().isEmpty() && !(commitNumber == 0)) {
+            channelBot.channelMessage("/me commit " + commitHash + " number " + commitNumber + " leaving MrDestructoid");
+        } else {
+            channelBot.channelMessage("/me leaving MrDestructoid");
+        }
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         channelBot.disconnect();
-        channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
         channelBot.dispose();
+        channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
+        channelBot.setRunning(false);
     }
 }

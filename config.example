@@ -9,23 +9,23 @@ oauth = oauth:asdfasdfasdfasdfasdfasdfasdf
 #The channel your bot runs in
 channel = Channel
 
-#The name of the bot's admin(probably your twitch name) 
+#The name of the bot's admin(probably your twitch name)
 admin = Admin
 
-#Placeholder until I implement points system(has no effect)
-trustedUsers = 
+#Users with superModerator access level
+superModerators =
 
 
-#[Flags]
+#[Flags(true/false)]
 
-#Show twitch chat in terminal(true or false)
+#Show twitch chat in terminal
 twitchChat = true
 
-#Join and leave channels silently(true or false)
-silentJoinLeave = false
+#Disable outgoing messages
+silentMode = false
 
 
-#[Variables for custom command formatting(true or false)]
+#[Variables for custom command formatting(true/false)]
 
 {sender} = true
 {realsender} = true
@@ -41,7 +41,7 @@ silentJoinLeave = false
 {channel} = true
 
 
-#[Modules(true or false)]
+#[Modules(true/false)]
 
 CustomCommands = true
 Raffle = true

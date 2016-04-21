@@ -17,8 +17,7 @@ public class ChannelBot extends PircBot {
 
     public long timeStarted = System.currentTimeMillis();
     public String botName, oauth, admin, channel, commitHash, branch, path;
-    public String[] trustedUsers;
-    public boolean silentJoinLeave, twitchChat, running = false, modded;
+    public boolean silentMode, twitchChat, running = false, modded;
     public HashMap<String, AccessLevel> userAccessLevels = new HashMap<>();
     public ModuleHandler moduleHandler = new ModuleHandler();
     public Commands commands;
@@ -71,11 +70,11 @@ public class ChannelBot extends PircBot {
         oauth = config.getString("oauth");
         admin = config.getString("admin").toLowerCase();
         userAccessLevels.put(admin, AccessLevel.ADMIN);
-        trustedUsers = config.getStringArray("trustedUsers");
-        for (String trustedUser : trustedUsers) userAccessLevels.put(trustedUser, AccessLevel.SUPERMODERATOR);
+        String[] superModerators = config.getStringArray("trustedUsers");
+        for (String trustedUser : superModerators) userAccessLevels.put(trustedUser, AccessLevel.SUPERMODERATOR);
         channel = "#" + config.getString("channel").toLowerCase();
 
-        silentJoinLeave = config.getBoolean("silentJoinLeave");
+        silentMode = config.getBoolean("silentMode");
         twitchChat = config.getBoolean("twitchChat", false);
 
         this.log("Botname: " + config.getString("botName"), LogLevel.DEBUG);
@@ -122,16 +121,14 @@ public class ChannelBot extends PircBot {
         this.log("Loading modules", LogLevel.DEBUG);
         this.loadModules();
 
-        if (!silentJoinLeave) {
-            try {
-                commitHash = this.readFromShellCommand("git rev-parse --short HEAD");
-                commitNumber = Integer.parseInt(this.readFromShellCommand("git rev-list --count HEAD"));
-                this.channelMessage("/me commit " + commitHash + " number " + commitNumber + " joining MrDestructoid");
+        try {
+            commitHash = this.readFromShellCommand("git rev-parse --short HEAD");
+            commitNumber = Integer.parseInt(this.readFromShellCommand("git rev-list --count HEAD"));
+            this.channelMessage("/me commit " + commitHash + " number " + commitNumber + " joining MrDestructoid");
 
-                branch = readFromShellCommand("git branch").substring(2);
-            } catch (Exception e) {
-                this.channelMessage("/me joining MrDestructoid");
-            }
+            branch = readFromShellCommand("git branch").substring(2);
+        } catch (Exception e) {
+            this.channelMessage("/me joining MrDestructoid");
         }
     }
 
@@ -150,7 +147,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void channelMessage(String message) {
-        if (message != null && !message.trim().isEmpty())
+        if (!silentMode && message != null && !message.trim().isEmpty())
             sendMessage(channel, message + " ");
     }
 
@@ -176,7 +173,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void whisperMessage(String user, String message) {
-        if (message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
+        if (!silentMode && message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
             sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
     }
 
@@ -260,8 +257,8 @@ public class ChannelBot extends PircBot {
         return config;
     }
 
-    public boolean isSilentJoinLeave() {
-        return silentJoinLeave;
+    public boolean isSilentMode() {
+        return silentMode;
     }
 
     public String getChannel() {
@@ -302,5 +299,13 @@ public class ChannelBot extends PircBot {
 
     public HashMap<String, AccessLevel> getUserAccessLevels() {
         return userAccessLevels;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }

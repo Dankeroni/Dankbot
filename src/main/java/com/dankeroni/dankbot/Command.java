@@ -1,16 +1,17 @@
 package com.dankeroni.dankbot;
 
+import java.util.ArrayList;
+
 public class Command {
 
-    public String command, response;
-    public TriConsumer action;
+    public String command;
     public AccessLevel accessLevel;
     public int globalCooldown, userCooldown;
+    public boolean onGlobalCooldown = false;
+    public ArrayList<String> usersOnCooldown = new ArrayList<>();
 
-    public Command(String command, TriConsumer action, String response, AccessLevel accessLevel, int globalCooldown, int userCooldown) {
+    public Command(String command, AccessLevel accessLevel, int globalCooldown, int userCooldown) {
         this.command = command;
-        this.action = action;
-        this.response = response;
         this.accessLevel = accessLevel;
         this.globalCooldown = globalCooldown;
         this.userCooldown = userCooldown;
@@ -18,14 +19,6 @@ public class Command {
 
     public String getCommand() {
         return command;
-    }
-
-    public TriConsumer getAction() {
-        return action;
-    }
-
-    public String getResponse() {
-        return response;
     }
 
     public AccessLevel getAccessLevel() {
@@ -40,4 +33,16 @@ public class Command {
         return userCooldown;
     }
 
+    public boolean isOnGlobalCooldown() {
+        return onGlobalCooldown;
+    }
+
+    public void setOnGlobalCooldown(boolean onGlobalCooldown) {
+        this.onGlobalCooldown = onGlobalCooldown;
+    }
+
+    public ArrayList<String> getUsersOnCooldown() {
+        return usersOnCooldown;
+    }
 }
+

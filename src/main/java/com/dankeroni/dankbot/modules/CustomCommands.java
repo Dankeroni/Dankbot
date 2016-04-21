@@ -39,19 +39,18 @@ public class CustomCommands extends Module {
             }
         }
 
-        commands.addCommand(new Command("!rawcom", this::rawCommand, null, AccessLevel.USER, 2, 4), false);
-        commands.addCommand(new Command("!addcom", this::addCustomCommandToConfig, null, AccessLevel.SUPERMODERATOR, 1, 1), false);
-        commands.addCommand(new Command("!removecom", this::removeCustomCommand, null, AccessLevel.SUPERMODERATOR, 1, 1), false);
+        commands.addActionCommand(new ActionCommand("!rawcom", this::rawCommand, AccessLevel.USER, 2, 4));
+        commands.addActionCommand(new ActionCommand("!addcom", this::addCustomCommandToConfig, AccessLevel.SUPERMODERATOR, 1, 1));
+        commands.addActionCommand(new ActionCommand("!removecom", this::removeCustomCommand, AccessLevel.SUPERMODERATOR, 1, 1));
     }
 
     public void rawCommand(String message, String sender, HashMap<String, String> tags) {
         try {
-            channelBot.channelMessage(commands.getCommands().get(Utils.makeArgs(message)[0]).getResponse());
+            channelBot.channelMessage(commands.getCustomCommands().get(Utils.makeArgs(message)[0]).getMessage());
         } catch (NullPointerException e) {
             channelBot.channelMessage("This command doesn't exist!");
         }
     }
-
 
     public boolean addCustomCommand(String message) {
         return addCustomCommand(message, true);
@@ -61,7 +60,7 @@ public class CustomCommands extends Module {
         String[] words = message.split(" ", 3);
         String command = words[1];
         String response = words[2];
-        return command.isEmpty() || response.isEmpty() || commands.addCommand(new Command(command, null, response, AccessLevel.USER, 4, 10), log);
+        return command.isEmpty() || response.isEmpty() || commands.addCustomCommand(new MessageCommand(command, response, AccessLevel.USER, 4, 10), log);
     }
 
     public void addCustomCommandToConfig(String message, String sender, HashMap<String, String> tags) {
@@ -76,7 +75,7 @@ public class CustomCommands extends Module {
 
     public void removeCustomCommand(String message, String sender, HashMap<String, String> tags) {
         String commandName = message.split(" ")[1];
-        if (!commandFileExists || !commands.removeCommand(commandName)) return;
+        if (!commandFileExists || !commands.removeCustomCommand(commandName)) return;
 
         File tempFile = new File(channelBot.getPath() + "config_temp.commands");
 
