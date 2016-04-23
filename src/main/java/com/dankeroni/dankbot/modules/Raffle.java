@@ -13,19 +13,20 @@ public class Raffle extends Module {
     public ArrayList<String> enteredUsers;
     public Random random = new Random();
 
-    public BiConsumer raffle = (rafflePoints, raffleTime) -> {
+    public BiConsumer<Integer, Integer> raffle = (rafflePoints, raffleTime) -> {
         raffleRunning = true;
         enteredUsers = new ArrayList<>();
         channelBot.channelMessage("A raffle has begun for " + rafflePoints + " points. Type !join to join the raffle! The raffle will end in " + raffleTime + " seconds");
+        long sleepTime = (long) (raffleTime * 1000 * 0.25);
         try {
-            Thread.sleep((long) ((int) raffleTime * 1000 * 0.25));
-            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) ((int) raffleTime * 0.75) + " seconds! Type !join to join the raffle!");
-            Thread.sleep((long) ((int) raffleTime * 1000 * 0.25));
-            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) ((int) raffleTime * 0.50) + " seconds! Type !join to join the raffle!");
-            Thread.sleep((long) ((int) raffleTime * 1000 * 0.25));
-            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) ((int) raffleTime * 0.25) + " seconds! Type !join to join the raffle!");
-            Thread.sleep((long) ((int) raffleTime * 1000 * 0.25));
-        } catch (InterruptedException e) {
+            Thread.sleep(sleepTime);
+            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.75) + " seconds! Type !join to join the raffle!");
+            Thread.sleep(sleepTime);
+            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.50) + " seconds! Type !join to join the raffle!");
+            Thread.sleep(sleepTime);
+            channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.25) + " seconds! Type !join to join the raffle!");
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException ignored) {
         }
         String winner = getWinner();
         if (winner != null) {

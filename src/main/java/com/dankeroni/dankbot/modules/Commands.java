@@ -93,7 +93,7 @@ public class Commands extends Module {
         Thread putCommandOffCooldown = new Thread(() -> {
             try {
                 Thread.sleep(command.getGlobalCooldown() * 1000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
             command.setOnGlobalCooldown(false);
         });
@@ -107,7 +107,7 @@ public class Commands extends Module {
         Thread putUserOffCooldown = new Thread(() -> {
             try {
                 Thread.sleep(command.getUserCooldown() * 1000);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
             command.getUsersOnCooldown().remove(user);
         });

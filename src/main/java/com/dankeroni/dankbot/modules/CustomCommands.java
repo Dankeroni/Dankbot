@@ -46,7 +46,10 @@ public class CustomCommands extends Module {
 
     public void rawCommand(String message, String sender, HashMap<String, String> tags) {
         try {
-            channelBot.channelMessage(commands.getCustomCommands().get(Utils.makeArgs(message)[0]).getMessage());
+            String commandName = Utils.makeArgs(message)[0];
+            MessageCommand command = commands.getCustomCommands().get(commandName);
+            command = commands.getMessageCommands().getOrDefault(commandName, command);
+            channelBot.channelMessage(command.getMessage());
         } catch (NullPointerException e) {
             channelBot.channelMessage("This command doesn't exist!");
         }

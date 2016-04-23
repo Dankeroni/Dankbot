@@ -1,6 +1,6 @@
 package com.dankeroni.dankbot;
 
-import com.dankeroni.dankbot.json.Servers;
+import com.dankeroni.dankbot.json.tmi.servers.Servers;
 import com.dankeroni.dankbot.modules.*;
 import com.google.gson.Gson;
 import org.fusesource.jansi.Ansi;
@@ -11,13 +11,16 @@ import org.jibble.pircbot.PircBot;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class ChannelBot extends PircBot {
 
     public long timeStarted = System.currentTimeMillis();
     public String botName, oauth, admin, channel, commitHash, branch, path;
     public boolean silentMode, twitchChat, running = false, modded;
+    public Random random = new Random();
     public HashMap<String, AccessLevel> userAccessLevels = new HashMap<>();
     public ModuleHandler moduleHandler = new ModuleHandler();
     public Commands commands;
@@ -90,7 +93,16 @@ public class ChannelBot extends PircBot {
 
         try {
             Servers servers = new Gson().fromJson(Utils.readUrl("https://tmi.twitch.tv/servers?channel=".concat(channel.substring(1))), Servers.class);
-            String[] ipAndPort = servers.randomServer().split(":");
+            ArrayList<String> serverList = servers.servers;
+            String fullIp = null;
+
+            for (String server : serverList)
+                if (server.endsWith(String.valueOf(6667))) {
+                    fullIp = server;
+                    break;
+                } else fullIp = serverList.get(random.nextInt(serverList.size()));
+
+            String[] ipAndPort = fullIp.split(":");
             ip = ipAndPort[0];
             port = Integer.parseInt(ipAndPort[1]);
         } catch (Exception e) {
@@ -136,14 +148,14 @@ public class ChannelBot extends PircBot {
         moduleHandler.addModule(commands = new Commands(this));
         moduleHandler.addModule(stop = new Stop(this));
 
-        if (config.getBoolean("CustomCommands", true))
-            moduleHandler.addModule(customCommands = new CustomCommands(this));
-
         if (config.getBoolean("Raffle", true))
             moduleHandler.addModule(raffle = new Raffle(this));
 
         if (config.getBoolean("Eval", false))
             moduleHandler.addModule(eval = new Eval(this));
+
+        if (config.getBoolean("CustomCommands", true))
+            moduleHandler.addModule(customCommands = new CustomCommands(this));
     }
 
     public void channelMessage(String message) {
