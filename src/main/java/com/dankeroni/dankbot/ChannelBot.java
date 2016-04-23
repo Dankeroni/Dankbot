@@ -32,7 +32,7 @@ public class ChannelBot extends PircBot {
     public Raffle raffle;
 
     public ChannelBot(String path) {
-        this.path = path;
+        this.path = path.endsWith("/") ? path : path + "/";
         start();
     }
 
