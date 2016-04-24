@@ -12,7 +12,6 @@ dependencies {
     compile "com.google.code.gson:gson:2.6.2"
     compile "org.beanshell:bsh:2.0b5"
     compile "org.fusesource.jansi:jansi:1.11"
-    compile "com.fasterxml.jackson.core:jackson-core:2.7.3"
     compile "org.slf4j:slf4j-api:1.7.18"
     compile "com.github.Dankeroni:PircBot:v1.1"
 }

@@ -1,4 +1,3 @@
-
 package com.dankeroni.dankbot.json.api.users.user;
 
 import com.google.gson.annotations.Expose;

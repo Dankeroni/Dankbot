@@ -25,6 +25,14 @@ twitchChat = true
 silentMode = false
 
 
+#[Modules(true/false)]
+
+CustomCommands = true
+Points = true
+Raffle = true
+Eval = false
+
+
 #[Variables for custom command formatting(true/false)]
 
 {sender} = true
@@ -39,10 +47,4 @@ silentMode = false
 {branch} = true
 {admin} = true
 {channel} = true
-
-
-#[Modules(true/false)]
-
-CustomCommands = true
-Raffle = true
-Eval = false
+{chattersCount} = true

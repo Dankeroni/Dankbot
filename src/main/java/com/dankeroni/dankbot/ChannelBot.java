@@ -30,6 +30,7 @@ public class ChannelBot extends PircBot {
     public Stop stop;
     public Eval eval;
     public Raffle raffle;
+    public Points points;
 
     public ChannelBot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
@@ -156,6 +157,9 @@ public class ChannelBot extends PircBot {
 
         if (config.getBoolean("CustomCommands", true))
             moduleHandler.addModule(customCommands = new CustomCommands(this));
+
+        if (config.getBoolean("Points", true))
+            moduleHandler.addModule(points = new Points(this));
     }
 
     public void channelMessage(String message) {

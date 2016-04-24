@@ -54,9 +54,7 @@ public class Config {
     }
 
     public String getString(String option, String defaultVal) {
-        if (properties.containsKey(option))
-            return properties.getProperty(option);
-        return defaultVal;
+        return properties.containsKey(option) ? properties.getProperty(option) : defaultVal;
     }
 
     public boolean getBoolean(String option) {
@@ -64,9 +62,7 @@ public class Config {
     }
 
     public boolean getBoolean(String option, boolean defaultVal) {
-        if (properties.containsKey(option))
-            return Boolean.parseBoolean(properties.getProperty(option));
-        return defaultVal;
+        return properties.containsKey(option) ? Boolean.parseBoolean(properties.getProperty(option)) : defaultVal;
     }
 
     public int getInt(String option) {
@@ -74,9 +70,7 @@ public class Config {
     }
 
     public int getInt(String option, int defaultVal) {
-        if (properties.containsKey(option))
-            return Integer.parseInt(properties.getProperty(option));
-        return defaultVal;
+        return properties.containsKey(option) ? Integer.parseInt(properties.getProperty(option)) : defaultVal;
     }
 
     public double getDouble(String option) {
@@ -84,9 +78,7 @@ public class Config {
     }
 
     public double getDouble(String option, double defaultVal) {
-        if (properties.containsKey(option))
-            return Double.parseDouble(properties.getProperty(option));
-        return defaultVal;
+        return properties.containsKey(option) ? Double.parseDouble(properties.getProperty(option)) : defaultVal;
     }
 
     public float getFloat(String option) {
@@ -94,9 +86,7 @@ public class Config {
     }
 
     public float getFloat(String option, float defaultVal) {
-        if (properties.containsKey(option))
-            return Float.parseFloat(properties.getProperty(option));
-        return defaultVal;
+        return properties.containsKey(option) ? Float.parseFloat(properties.getProperty(option)) : defaultVal;
     }
 
     public long getLong(String option) {
@@ -104,18 +94,14 @@ public class Config {
     }
 
     public long getLong(String option, long defaultVal) {
-        if (properties.containsKey(option))
-            return Long.parseLong(properties.getProperty(option));
-        return defaultVal;
+        return properties.containsKey(option) ? Long.parseLong(properties.getProperty(option)) : defaultVal;
     }
 
     public String[] getStringArray(String option) {
         return getStringArray(option, new String[]{});
     }
 
-    public String[] getStringArray(String option, String[] defaultStringArray) {
-        if (properties.containsKey(option))
-            return properties.getProperty(option).split(" ");
-        return defaultStringArray;
+    public String[] getStringArray(String option, String[] defaultVal) {
+        return properties.containsKey(option) ? properties.getProperty(option).split(" ") : defaultVal;
     }
 }

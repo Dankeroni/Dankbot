@@ -1,13 +1,14 @@
 package com.dankeroni.dankbot;
 
+import com.dankeroni.dankbot.json.tmi.group.user.user.chatters.Chatters;
+import com.dankeroni.dankbot.json.tmi.group.user.user.chatters.Chatters_;
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -58,6 +59,20 @@ public class Utils {
         return message.equals(command) || message.startsWith(command + " ");
     }
 
+    public static void runThreaded(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public static void runDelayed(Runnable runnable, long millis) {
+        runThreaded(() -> {
+            long started = System.currentTimeMillis();
+            while (System.currentTimeMillis() - started < millis) ;
+            runnable.run();
+        });
+    }
+
     public static String[] makeArgs(String message) {
         String[] messageWords = message.split(" ");
         return Arrays.copyOfRange(messageWords, 1, messageWords.length);
@@ -91,6 +106,7 @@ public class Utils {
                 args.put("{branch}", () -> channelBot.getBranch());
                 args.put("{admin}", () -> channelBot.getAdmin());
                 args.put("{channel}", () -> channelBot.getChannel());
+                args.put("{chattersCount}", () -> String.valueOf(chattersCount()));
 
                 argsConfigured = true;
             }
@@ -156,5 +172,29 @@ public class Utils {
 
         String time = stringBuilder.toString().trim();
         return time.endsWith("and") ? time.substring(0, time.length() - 4) : time;
+    }
+
+    public static int chattersCount() {
+        int count = 0;
+        for (ArrayList<String> chattersList : getAllChattersLists())
+            count += chattersList.size();
+        return count;
+    }
+
+    public static ArrayList<ArrayList<String>> getAllChattersLists() {
+        Chatters chatters = null;
+        try {
+            chatters = new Gson().fromJson(Utils.readUrl("https://tmi.twitch.tv/group/user/" + channelBot.getChannel().substring(1) + "/chatters"), Chatters.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Chatters_ chatters_ = chatters.chatters;
+        ArrayList<ArrayList<String>> allChattersLists = new ArrayList<>();
+        allChattersLists.add(chatters_.moderators);
+        allChattersLists.add(chatters_.staff);
+        allChattersLists.add(chatters_.admins);
+        allChattersLists.add(chatters_.globalMods);
+        allChattersLists.add(chatters_.viewers);
+        return allChattersLists;
     }
 }

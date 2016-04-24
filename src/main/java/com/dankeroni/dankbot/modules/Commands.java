@@ -28,8 +28,10 @@ public class Commands extends Module {
             if (this.commandReady(actionCommand, sender) && Utils.checkAccessLevel(sender, actionCommand.getAccessLevel()) && this.userReady(actionCommand, sender)) {
                 Action action;
                 if ((action = actionCommand.getAction()) != null) action.accept(message, sender, tags);
+
+                if (!Utils.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                    this.putUserOnCooldown(actionCommand, sender);
                 this.putCommandOnCooldown(actionCommand);
-                this.putUserOnCooldown(actionCommand, sender);
             }
         }
 
@@ -41,6 +43,10 @@ public class Commands extends Module {
                 if ((unformattedMessage = messageCommand.getMessage()) != null)
                     if (whisper) channelBot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
                     else channelBot.formattedChannelMessage(unformattedMessage, sender, message, tags);
+
+                if (!Utils.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                    this.putUserOnCooldown(messageCommand, sender);
+                this.putCommandOnCooldown(messageCommand);
             }
         }
     }
@@ -89,30 +95,12 @@ public class Commands extends Module {
 
     public void putCommandOnCooldown(Command command) {
         command.setOnGlobalCooldown(true);
-
-        Thread putCommandOffCooldown = new Thread(() -> {
-            try {
-                Thread.sleep(command.getGlobalCooldown() * 1000);
-            } catch (InterruptedException ignored) {
-            }
-            command.setOnGlobalCooldown(false);
-        });
-        putCommandOffCooldown.setDaemon(true);
-        putCommandOffCooldown.start();
+        Utils.runDelayed(() -> command.setOnGlobalCooldown(false), command.getGlobalCooldown() * 1000);
     }
 
     public void putUserOnCooldown(Command command, String user) {
         command.getUsersOnCooldown().add(user);
-
-        Thread putUserOffCooldown = new Thread(() -> {
-            try {
-                Thread.sleep(command.getUserCooldown() * 1000);
-            } catch (InterruptedException ignored) {
-            }
-            command.getUsersOnCooldown().remove(user);
-        });
-        putUserOffCooldown.setDaemon(true);
-        putUserOffCooldown.start();
+        Utils.runDelayed(() -> command.getUsersOnCooldown().remove(user), command.getUserCooldown() * 1000);
     }
 
     public HashMap<String, ActionCommand> getActionCommands() {

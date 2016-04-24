@@ -29,15 +29,11 @@ public class Stop extends Module {
             channelBot.channelMessage("/me leaving MrDestructoid");
         }
 
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        channelBot.disconnect();
-        channelBot.dispose();
-        channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
-        channelBot.setRunning(false);
+        Utils.runDelayed(() -> {
+            channelBot.disconnect();
+            channelBot.dispose();
+            channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
+            channelBot.setRunning(false);
+        }, 500);
     }
 }

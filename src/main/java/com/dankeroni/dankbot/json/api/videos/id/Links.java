@@ -1,4 +1,3 @@
-
 package com.dankeroni.dankbot.json.api.videos.id;
 
 import com.google.gson.annotations.Expose;

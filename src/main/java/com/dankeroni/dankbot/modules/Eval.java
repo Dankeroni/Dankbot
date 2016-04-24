@@ -11,7 +11,6 @@ import java.util.HashMap;
 public class Eval extends Module {
 
     public Interpreter interpreter = new Interpreter();
-    public Thread commandLine;
 
     public Runnable commandLineInput = () -> {
         BufferedReader commandLineReader = new BufferedReader(new InputStreamReader(System.in));
@@ -37,10 +36,7 @@ public class Eval extends Module {
             channelBot.log("Error initializing Eval module", LogLevel.WARN);
             return;
         }
-
-        commandLine = new Thread(commandLineInput);
-        commandLine.setDaemon(true);
-        commandLine.start();
+        Utils.runThreaded(commandLineInput);
 
         commands.addActionCommand(new ActionCommand("!eval", this::evalFromMessage, AccessLevel.ADMIN, 0, 0));
     }

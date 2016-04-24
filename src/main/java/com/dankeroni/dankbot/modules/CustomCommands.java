@@ -19,7 +19,6 @@ public class CustomCommands extends Module {
     public CustomCommands(ChannelBot channelBot) {
         super(channelBot);
 
-
         if (commandFile2.exists()) {
             commandFileExists = true;
             channelBot.log("Loading custom commands", LogLevel.DEBUG);
