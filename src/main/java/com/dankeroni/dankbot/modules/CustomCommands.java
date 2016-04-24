@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 public class CustomCommands extends Module {
 
-    public Path commandFile = Paths.get(channelBot.getPath() + "config.commands");
-    public File commandFile2 = new File(channelBot.getPath() + "config.commands");
+    public Path commandFile = Paths.get(channelBot.getPath() + "save.commands");
+    public File commandFile2 = new File(channelBot.getPath() + "save.commands");
     public boolean commandFileExists;
 
     public CustomCommands(ChannelBot channelBot) {
@@ -79,7 +79,7 @@ public class CustomCommands extends Module {
         String commandName = message.split(" ")[1];
         if (!commandFileExists || !commands.removeCustomCommand(commandName)) return;
 
-        File tempFile = new File(channelBot.getPath() + "config_temp.commands");
+        File tempFile = new File(channelBot.getPath() + "save_temp.commands");
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(commandFile2));

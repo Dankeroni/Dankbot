@@ -201,6 +201,14 @@ public class ChannelBot extends PircBot {
         moduleHandler.onWhisperMessage(message, sender, tags);
     }
 
+    public void ban(String user) {
+        this.channelMessage(".ban " + user);
+    }
+
+    public void timeout(String user, int seconds) {
+        this.channelMessage(".timeout " + seconds);
+    }
+
     public String readFromShellCommand(String command) {
         try {
             Process process = Runtime.getRuntime().exec(command);

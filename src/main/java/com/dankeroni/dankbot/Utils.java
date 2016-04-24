@@ -10,7 +10,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 public class Utils {
 
@@ -20,7 +19,7 @@ public class Utils {
     public static SimpleDateFormat time = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat detailedTime = new SimpleDateFormat("HH:mm:ss,SSS");
     public static SimpleDateFormat date = new SimpleDateFormat("dd-MM-yy");
-    public static HashMap<String, Supplier> args = new HashMap<>();
+    public static HashMap<String, Variable> args = new HashMap<>();
 
     static {
         time.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -83,48 +82,47 @@ public class Utils {
     }
 
     public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags, boolean considerConfig) {
-        if (message.contains("{") && message.contains("}")) {
-            String[] messageArgs = makeArgs(senderMessage);
-            for (int i2 = 0; i2 < 10; i2++)
-                args.put("{arg" + String.valueOf(i2) + "}", null);
+        if (!message.contains("{") || !message.contains("}")) return message;
 
-            for (int i = 0; i < messageArgs.length; i++) {
-                int finalI = i;
-                args.put("{arg" + String.valueOf(i) + "}", () -> messageArgs[finalI]);
-            }
+        String[] messageArgs = makeArgs(senderMessage);
+        for (int i2 = 0; i2 < 10; i2++)
+            args.put("{arg" + String.valueOf(i2) + "}", null);
 
-            if (!argsConfigured) {
-                args.put("{sender}", () -> tags.get("display-name"));
-                args.put("{realsender}", () -> sender);
-                args.put("{time}", Utils::time);
-                args.put("{detailedtime}", Utils::detailedTime);
-                args.put("{date}", Utils::date);
-                args.put("{botuptime}", Utils::botUpTime);
-                args.put("{botname}", () -> channelBot.getName());
-                args.put("{commitHash}", () -> channelBot.getCommitHash());
-                args.put("{commitNumber}", () -> String.valueOf(channelBot.getCommitNumber()));
-                args.put("{branch}", () -> channelBot.getBranch());
-                args.put("{admin}", () -> channelBot.getAdmin());
-                args.put("{channel}", () -> channelBot.getChannel());
-                args.put("{chattersCount}", () -> String.valueOf(chattersCount()));
+        for (int i = 0; i < messageArgs.length; i++) {
+            int finalI = i;
+            args.put("{arg" + String.valueOf(i) + "}", (a, b, c) -> messageArgs[finalI]);
+        }
 
-                argsConfigured = true;
-            }
+        if (!argsConfigured) {
+            args.put("{sender}", (a, b, c) -> c.get("display-name"));
+            args.put("{realsender}", (a, b, c) -> b);
+            args.put("{time}", Utils::time);
+            args.put("{detailedtime}", Utils::detailedTime);
+            args.put("{date}", Utils::date);
+            args.put("{botuptime}", Utils::botUpTime);
+            args.put("{botname}", (a, b, c) -> channelBot.getName());
+            args.put("{commitHash}", (a, b, c) -> channelBot.getCommitHash());
+            args.put("{commitNumber}", (a, b, c) -> String.valueOf(channelBot.getCommitNumber()));
+            args.put("{branch}", (a, b, c) -> channelBot.getBranch());
+            args.put("{admin}", (a, b, c) -> channelBot.getAdmin());
+            args.put("{channel}", (a, b, c) -> channelBot.getChannel());
+            args.put("{chattersCount}", (a, b, c) -> String.valueOf(chattersCount()));
 
-            for (HashMap.Entry<String, Supplier> arg : args.entrySet()) {
-                String key = arg.getKey(), value;
+            argsConfigured = true;
+        }
+
+        for (HashMap.Entry<String, Variable> arg : args.entrySet()) {
+            String key = arg.getKey();
+
+            if (message.contains(key) && (!considerConfig || config.getBoolean(key, true))) {
+                String value;
                 try {
-                    value = (String) arg.getValue().get();
+                    value = arg.getValue().get(message, sender, tags);
                 } catch (NullPointerException e) {
                     value = null;
                 }
-
-                if (message.contains(key) && (!considerConfig || config.getBoolean(key, true)))
-                    if (value != null && !value.trim().isEmpty()) {
-                        message = message.replace(key, value);
-                    } else {
-                        return tags.get("display-name") + ", invalid arguments";
-                    }
+                if (value != null && !value.trim().isEmpty()) message = message.replace(key, value);
+                else return tags.get("display-name") + ", invalid arguments";
             }
         }
         return message;
@@ -134,19 +132,27 @@ public class Utils {
         return channelBot.getUserAccessLevels().getOrDefault(user, AccessLevel.USER).compareTo(accessLevel) <= 0;
     }
 
-    public static String time() {
+    public static String time(String message, String sender, HashMap<String, String> tags) {
         return time.format(new Date());
     }
 
     public static String detailedTime() {
+        return detailedTime(null, null, null);
+    }
+
+    public static String detailedTime(String message, String sender, HashMap<String, String> tags) {
         return detailedTime.format(new Date());
     }
 
     public static String date() {
+        return date(null, null, null);
+    }
+
+    public static String date(String message, String sender, HashMap<String, String> tags) {
         return date.format(new Date());
     }
 
-    public static String botUpTime() {
+    public static String botUpTime(String message, String sender, HashMap<String, String> tags) {
         long millis = System.currentTimeMillis() - channelBot.getTimeStarted();
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
