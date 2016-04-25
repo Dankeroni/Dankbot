@@ -68,7 +68,7 @@ public class CustomCommands extends Module {
     public void addCustomCommandToConfig(String message, String sender, HashMap<String, String> tags) {
         if (commandFileExists && addCustomCommand(message)) {
             try {
-                Files.write(commandFile, (String.join(" ", (CharSequence[]) Utils.makeArgs(message)) + "\n").getBytes(), StandardOpenOption.APPEND);
+                Files.write(commandFile, (String.join(" ", (CharSequence[]) Utils.makeArgs(message)) + System.getProperty("line.separator")).getBytes(), StandardOpenOption.APPEND);
             } catch (IOException e) {
                 e.printStackTrace();
             }

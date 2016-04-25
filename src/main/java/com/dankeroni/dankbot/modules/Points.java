@@ -62,11 +62,9 @@ public class Points extends Module {
     }
 
     public synchronized void savePoints() {
-        try {
-            PrintWriter printWriter = new PrintWriter(new FileWriter(pointsFile));
+        try (PrintWriter printWriter = new PrintWriter(new FileWriter(pointsFile))) {
             for (HashMap.Entry<String, Integer> userAndPoints : points.entrySet())
                 printWriter.println(userAndPoints.getKey() + " " + userAndPoints.getValue());
-            printWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
             channelBot.log("Error saving points", LogLevel.WARN);
