@@ -59,17 +59,25 @@ public class Utils {
     }
 
     public static void runThreaded(Runnable runnable) {
+        runThreaded(runnable, true);
+    }
+
+    public static void runThreaded(Runnable runnable, boolean daemon) {
         Thread thread = new Thread(runnable);
-        thread.setDaemon(true);
+        thread.setDaemon(daemon);
         thread.start();
     }
 
     public static void runDelayed(Runnable runnable, long millis) {
+        runDelayed(runnable, millis, true);
+    }
+
+    public static void runDelayed(Runnable runnable, long millis, boolean daemon) {
         runThreaded(() -> {
             long started = System.currentTimeMillis();
             while (System.currentTimeMillis() - started < millis) ;
             runnable.run();
-        });
+        }, daemon);
     }
 
     public static String[] makeArgs(String message) {

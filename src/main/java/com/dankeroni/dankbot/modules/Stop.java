@@ -34,6 +34,6 @@ public class Stop extends Module {
             channelBot.dispose();
             channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
             channelBot.setRunning(false);
-        }, 500);
+        }, 500, false);
     }
 }
