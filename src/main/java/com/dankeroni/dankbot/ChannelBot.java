@@ -49,12 +49,6 @@ public class ChannelBot extends PircBot {
         if (running)
             return;
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                stop.stop();
-            }
-        });
-
         running = true;
         AnsiConsole.systemInstall();
         this.log(String.format("Log start: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
@@ -148,6 +142,12 @@ public class ChannelBot extends PircBot {
     public void loadModules() {
         moduleHandler.addModule(commands = new Commands(this));
         moduleHandler.addModule(stop = new Stop(this));
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                stop.stop();
+            }
+        });
 
         if (config.getBoolean("Raffle", true))
             moduleHandler.addModule(raffle = new Raffle(this));
