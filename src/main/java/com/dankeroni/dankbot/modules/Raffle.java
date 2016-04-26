@@ -42,6 +42,7 @@ public class Raffle extends Module {
         Utils.runDelayed(() -> {
             if (enteredUsers.size() > 0) {
                 String winner = enteredUsers.get(random.nextInt(enteredUsers.size()));
+                channelBot.getPoints().addPoints(winner, rafflePoints);
                 channelBot.channelMessage("The raffle has finished! " + winner + " won " + rafflePoints + " points! Kappa");
             } else channelBot.channelMessage("Nobody entered the raffle.");
             raffleRunning = false;

@@ -52,21 +52,21 @@ public class Commands extends Module {
     }
 
     public boolean addActionCommand(ActionCommand command) {
-        if (!containsCommand(command)) {
+        if (doesNotContainCommand(command)) {
             actionCommands.put(command.getCommand().toLowerCase(), command);
             return true;
         } else return false;
     }
 
     public boolean addMessageCommand(MessageCommand command) {
-        if (!containsCommand(command)) {
+        if (doesNotContainCommand(command)) {
             messageCommands.put(command.getCommand().toLowerCase(), command);
             return true;
         } else return false;
     }
 
     public boolean addCustomCommand(MessageCommand command, boolean log) {
-        if (!containsCommand(command)) {
+        if (doesNotContainCommand(command)) {
             customCommands.put(command.getCommand().toLowerCase(), command);
             if (log) channelBot.log("Added custom command \"" + command.getCommand() + "\"", LogLevel.DEBUG);
             return true;
@@ -81,8 +81,8 @@ public class Commands extends Module {
         } else return false;
     }
 
-    public boolean containsCommand(Command command) {
-        return customCommands.containsKey(command.getCommand().toLowerCase()) || messageCommands.containsKey(command.getCommand().toLowerCase()) || actionCommands.containsKey(command.getCommand().toLowerCase());
+    public boolean doesNotContainCommand(Command command) {
+        return !customCommands.containsKey(command.getCommand().toLowerCase()) && !messageCommands.containsKey(command.getCommand().toLowerCase()) && !actionCommands.containsKey(command.getCommand().toLowerCase());
     }
 
     public boolean commandReady(Command command, String user) {

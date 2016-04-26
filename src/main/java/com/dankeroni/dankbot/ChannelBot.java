@@ -155,15 +155,19 @@ public class ChannelBot extends PircBot {
         if (config.getBoolean("Eval", false))
             moduleHandler.addModule(eval = new Eval(this));
 
-        if (config.getBoolean("CustomCommands", true))
-            moduleHandler.addModule(customCommands = new CustomCommands(this));
-
         if (config.getBoolean("Points", true))
             moduleHandler.addModule(points = new Points(this));
+
+        if (config.getBoolean("CustomCommands", true))
+            moduleHandler.addModule(customCommands = new CustomCommands(this));
     }
 
     public void channelMessage(String message) {
-        if (!silentMode && message != null && !message.trim().isEmpty())
+        this.channelMessage(message, false);
+    }
+
+    public void channelMessage(String message, boolean ignoreSilentMode) {
+        if ((!silentMode || ignoreSilentMode) && message != null && !message.trim().isEmpty())
             sendMessage(channel, message + " ");
     }
 
@@ -189,7 +193,11 @@ public class ChannelBot extends PircBot {
     }
 
     public void whisperMessage(String user, String message) {
-        if (!silentMode && message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
+        this.whisperMessage(user, message, false);
+    }
+
+    public void whisperMessage(String user, String message, boolean ignoreSilentMode) {
+        if ((!silentMode || ignoreSilentMode) && message != null && user != null && !message.trim().isEmpty() && !user.trim().isEmpty())
             sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
     }
 
@@ -202,11 +210,15 @@ public class ChannelBot extends PircBot {
     }
 
     public void ban(String user) {
-        this.channelMessage(".ban " + user);
+        this.channelMessage(".ban " + user, true);
+    }
+
+    public void unban(String user) {
+        this.channelMessage(".unban " + user, true);
     }
 
     public void timeout(String user, int seconds) {
-        this.channelMessage(".timeout " + seconds);
+        this.channelMessage(".timeout " + seconds, true);
     }
 
     public String readFromShellCommand(String command) {
@@ -315,6 +327,14 @@ public class ChannelBot extends PircBot {
 
     public Eval getEval() {
         return eval;
+    }
+
+    public Raffle getRaffle() {
+        return raffle;
+    }
+
+    public Points getPoints() {
+        return points;
     }
 
     public Commands getCommands() {

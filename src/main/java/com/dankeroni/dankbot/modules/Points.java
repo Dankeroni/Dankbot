@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class Points extends Module {
 
-    public HashMap<String, Integer> points = new HashMap<>();
+    public HashMap<String, Integer> pointsList = new HashMap<>();
     public File pointsFile = new File(channelBot.getPath() + "save.points");
     public boolean pointsFileExists;
 
@@ -22,7 +22,7 @@ public class Points extends Module {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] nameAndPoints = line.trim().split(" ");
-                    points.put(nameAndPoints[0], Integer.parseInt(nameAndPoints[1]));
+                    pointsList.put(nameAndPoints[0], Integer.parseInt(nameAndPoints[1]));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -44,26 +44,29 @@ public class Points extends Module {
         commands.addActionCommand(new ActionCommand("!userpoints", this::userPoints, AccessLevel.USER, 4, 10));
     }
 
-
     public void pointsForChatting() {
         for (ArrayList<String> chattersList : Utils.getAllChattersLists())
             for (String chatter : chattersList)
-                points.put(chatter.toLowerCase(), points.getOrDefault(chatter.toLowerCase(), 0) + 10);
+                this.addPoints(chatter, 10);
         this.savePoints();
         Utils.runDelayed(this::pointsForChatting, 300000);
     }
 
+    public void addPoints(String user, int points) {
+        pointsList.put(user.toLowerCase(), pointsList.getOrDefault(user.toLowerCase(), 0) + points);
+    }
+
     public void userPoints(String message, String sender, HashMap<String, String> tags) {
-        channelBot.channelMessage(tags.get("display-name") + " has " + points.getOrDefault(sender, 0) + " points");
+        channelBot.channelMessage(tags.get("display-name") + " has " + pointsList.getOrDefault(sender, 0) + " points");
     }
 
     public void userPointsWhisper(String message, String sender, HashMap<String, String> tags) {
-        channelBot.whisperMessage(sender, "You have " + points.getOrDefault(sender, 0) + " points");
+        channelBot.whisperMessage(sender, "You have " + pointsList.getOrDefault(sender, 0) + " points");
     }
 
     public synchronized void savePoints() {
         try (PrintWriter printWriter = new PrintWriter(new FileWriter(pointsFile))) {
-            for (HashMap.Entry<String, Integer> userAndPoints : points.entrySet())
+            for (HashMap.Entry<String, Integer> userAndPoints : pointsList.entrySet())
                 printWriter.println(userAndPoints.getKey() + " " + userAndPoints.getValue());
         } catch (IOException e) {
             e.printStackTrace();
