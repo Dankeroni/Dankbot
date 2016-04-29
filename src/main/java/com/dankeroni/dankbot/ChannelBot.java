@@ -254,31 +254,11 @@ public class ChannelBot extends PircBot {
 
     public void log(String line, LogLevel logLevel) {
         line = line.trim();
-        if (line.isEmpty()) return;
-        Ansi ansi = Ansi.ansi();
 
-        switch (logLevel) {
-            case TRACE:
-                if (twitchChat)
-                    System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.WHITE).a("[TRACE]").reset() + " " + line);
-                break;
+        if (line.isEmpty() || !twitchChat && logLevel == LogLevel.TRACE)
+            return;
 
-            case DEBUG:
-                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.CYAN).a("[DEBUG]").reset() + " " + line);
-                break;
-
-            case INFO:
-                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.GREEN).a("[INFO]").reset() + " " + line);
-                break;
-
-            case WARN:
-                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.YELLOW).a("[WARN]").reset() + " " + line);
-                break;
-
-            case ERROR:
-                System.out.println(Utils.detailedTime() + " " + ansi.fg(Ansi.Color.RED).a("[ERROR]").reset() + " " + line);
-                break;
-        }
+        System.out.println(Utils.logDate() + " " + Utils.detailedTime() + " " + logLevel + " " + line);
     }
 
     public ModuleHandler getModuleHandler() {

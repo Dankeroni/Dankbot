@@ -19,6 +19,7 @@ public class Utils {
     public static SimpleDateFormat time = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat detailedTime = new SimpleDateFormat("HH:mm:ss,SSS");
     public static SimpleDateFormat date = new SimpleDateFormat("dd-MM-yy");
+    public static SimpleDateFormat logDate = new SimpleDateFormat("yy-MM-dd");
     public static HashMap<String, Variable> args = new HashMap<>();
 
     static {
@@ -150,6 +151,10 @@ public class Utils {
 
     public static String detailedTime(String message, String sender, HashMap<String, String> tags) {
         return detailedTime.format(new Date());
+    }
+
+    public static String logDate() {
+        return logDate.format(new Date());
     }
 
     public static String date() {
