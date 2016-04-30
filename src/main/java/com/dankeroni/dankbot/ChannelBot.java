@@ -3,7 +3,6 @@ package com.dankeroni.dankbot;
 import com.dankeroni.dankbot.json.tmi.servers.Servers;
 import com.dankeroni.dankbot.modules.*;
 import com.google.gson.Gson;
-import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
@@ -21,7 +20,6 @@ public class ChannelBot extends PircBot {
     public String botName, oauth, admin, channel, commitHash, branch, path;
     public boolean silentMode, twitchChat, running = false, modded;
     public Random random = new Random();
-    public HashMap<String, AccessLevel> userAccessLevels = new HashMap<>();
     public ModuleHandler moduleHandler = new ModuleHandler();
     public Commands commands;
     public Config config;
@@ -32,6 +30,7 @@ public class ChannelBot extends PircBot {
     public Raffle raffle;
     public Points points;
     public Pyramids pyramids;
+    public UserManager userManager;
 
     public ChannelBot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
@@ -68,9 +67,6 @@ public class ChannelBot extends PircBot {
         botName = config.getString("botName").toLowerCase();
         oauth = config.getString("oauth");
         admin = config.getString("admin").toLowerCase();
-        userAccessLevels.put(admin, AccessLevel.ADMIN);
-        String[] superModerators = config.getStringArray("trustedUsers");
-        for (String trustedUser : superModerators) userAccessLevels.put(trustedUser, AccessLevel.SUPERMODERATOR);
         channel = "#" + config.getString("channel").toLowerCase();
 
         silentMode = config.getBoolean("silentMode");
@@ -128,6 +124,7 @@ public class ChannelBot extends PircBot {
 
         this.log("Loading modules", LogLevel.DEBUG);
         this.loadModules();
+        userManager.loadUsers();
 
         try {
             commitHash = this.readFromShellCommand("git rev-parse --short HEAD");
@@ -141,7 +138,12 @@ public class ChannelBot extends PircBot {
     }
 
     public void loadModules() {
+        moduleHandler.addModule(userManager = new UserManager(this));
         moduleHandler.addModule(commands = new Commands(this));
+        commands.setUserManager(userManager);
+        userManager.setCommands(commands);
+        userManager.init();
+
         moduleHandler.addModule(stop = new Stop(this));
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -321,12 +323,12 @@ public class ChannelBot extends PircBot {
         return points;
     }
 
-    public Commands getCommands() {
-        return commands;
+    public UserManager getUserManager() {
+        return userManager;
     }
 
-    public HashMap<String, AccessLevel> getUserAccessLevels() {
-        return userAccessLevels;
+    public Commands getCommands() {
+        return commands;
     }
 
     public boolean isRunning() {

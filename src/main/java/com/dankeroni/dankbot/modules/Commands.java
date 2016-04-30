@@ -9,7 +9,7 @@ public class Commands extends Module {
     public HashMap<String, ActionCommand> actionCommands = new HashMap<>();
     public HashMap<String, MessageCommand> messageCommands = new HashMap<>(), customCommands = new HashMap<>();
 
-    public Commands(ChannelBot channelBot) {
+    public Commands(ChannelBot channelBot) throws NullPointerException {
         super(channelBot);
     }
 
@@ -25,11 +25,11 @@ public class Commands extends Module {
         String commandName = message.split(" ")[0].toLowerCase();
         if (actionCommands.containsKey(commandName)) {
             ActionCommand actionCommand = actionCommands.get(commandName);
-            if (this.commandReady(actionCommand, sender) && Utils.checkAccessLevel(sender, actionCommand.getAccessLevel()) && this.userReady(actionCommand, sender)) {
+            if (this.commandReady(actionCommand, sender) && userManager.checkAccessLevel(sender, actionCommand.getAccessLevel()) && this.userReady(actionCommand, sender)) {
                 Action action;
                 if ((action = actionCommand.getAction()) != null) action.accept(message, sender, tags);
 
-                if (!Utils.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
                     this.putUserOnCooldown(actionCommand, sender);
                 this.putCommandOnCooldown(actionCommand);
             }
@@ -38,13 +38,13 @@ public class Commands extends Module {
         if (customCommands.containsKey(commandName) || messageCommands.containsKey(commandName)) {
             MessageCommand messageCommand = customCommands.get(commandName);
             messageCommand = messageCommands.getOrDefault(commandName, messageCommand);
-            if (this.commandReady(messageCommand, sender) && Utils.checkAccessLevel(sender, messageCommand.getAccessLevel()) && this.userReady(messageCommand, sender)) {
+            if (this.commandReady(messageCommand, sender) && userManager.checkAccessLevel(sender, messageCommand.getAccessLevel()) && this.userReady(messageCommand, sender)) {
                 String unformattedMessage;
                 if ((unformattedMessage = messageCommand.getMessage()) != null)
                     if (whisper) channelBot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
                     else channelBot.formattedChannelMessage(unformattedMessage, sender, message, tags);
 
-                if (!Utils.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
                     this.putUserOnCooldown(messageCommand, sender);
                 this.putCommandOnCooldown(messageCommand);
             }
@@ -86,11 +86,11 @@ public class Commands extends Module {
     }
 
     public boolean commandReady(Command command, String user) {
-        return !command.isOnGlobalCooldown() || Utils.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
+        return !command.isOnGlobalCooldown() || userManager.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
     }
 
     public boolean userReady(Command command, String user) {
-        return !command.getUsersOnCooldown().contains(user) || Utils.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
+        return !command.getUsersOnCooldown().contains(user) || userManager.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
     }
 
     public void putCommandOnCooldown(Command command) {
@@ -113,5 +113,9 @@ public class Commands extends Module {
 
     public HashMap<String, MessageCommand> getCustomCommands() {
         return customCommands;
+    }
+
+    public void setUserManager(UserManager userManager) {
+        this.userManager = userManager;
     }
 }

@@ -46,7 +46,7 @@ public class Eval extends Module {
         if (messageParts.length > 1 && !messageParts[1].isEmpty()) {
             try {
                 this.eval(messageParts[1]);
-            } catch (EvalError e) {
+            } catch (Exception e) {
                 channelBot.channelMessage("Failed to evaluate expression");
                 e.printStackTrace();
             }

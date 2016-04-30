@@ -137,10 +137,6 @@ public class Utils {
         return message;
     }
 
-    public static boolean checkAccessLevel(String user, AccessLevel accessLevel) {
-        return channelBot.getUserAccessLevels().getOrDefault(user, AccessLevel.USER).compareTo(accessLevel) <= 0;
-    }
-
     public static String time(String message, String sender, HashMap<String, String> tags) {
         return time.format(new Date());
     }

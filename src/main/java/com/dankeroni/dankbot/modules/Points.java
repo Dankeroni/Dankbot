@@ -53,15 +53,15 @@ public class Points extends Module {
     }
 
     public void addPoints(String user, int points) {
-        pointsList.put(user.toLowerCase(), pointsList.getOrDefault(user.toLowerCase(), 0) + points);
+        pointsList.put(user.toLowerCase(), this.getPoints(user) + points);
     }
 
     public void userPoints(String message, String sender, HashMap<String, String> tags) {
-        channelBot.channelMessage(tags.get("display-name") + " has " + pointsList.getOrDefault(sender, 0) + " points");
+        channelBot.channelMessage(tags.get("display-name") + " has " + this.getPoints(sender) + " points");
     }
 
     public void userPointsWhisper(String message, String sender, HashMap<String, String> tags) {
-        channelBot.whisperMessage(sender, "You have " + pointsList.getOrDefault(sender, 0) + " points");
+        channelBot.whisperMessage(sender, "You have " + this.getPoints(sender) + " points");
     }
 
     public synchronized void savePoints() {
@@ -72,5 +72,9 @@ public class Points extends Module {
             e.printStackTrace();
             channelBot.log("Error saving points", LogLevel.WARN);
         }
+    }
+
+    public int getPoints(String user) {
+        return pointsList.getOrDefault(user, 0);
     }
 }
