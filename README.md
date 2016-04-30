@@ -1,4 +1,4 @@
-# dankbot [![Build Status](https://travis-ci.org/dankeroni/dankbot.svg?branch=master)](https://travis-ci.org/Dankeroni/dankbot)
+# dankbot [![Build Status](https://travis-ci.org/dankeroni/dankbot.svg?branch=master)](https://travis-ci.org/dankeroni/dankbot)
 
 dankbot is an irc-bot which moderates channels on twitch.tv.
 
