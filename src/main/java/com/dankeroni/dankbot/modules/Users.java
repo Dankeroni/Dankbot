@@ -4,11 +4,11 @@ import com.dankeroni.dankbot.*;
 
 import java.util.HashMap;
 
-public class UserManager extends Module {
+public class Users extends Module {
 
     public HashMap<String, User> users = new HashMap<>();
 
-    public UserManager(ChannelBot channelBot) throws NullPointerException {
+    public Users(ChannelBot channelBot) throws NullPointerException {
         super(channelBot);
     }
 
@@ -22,7 +22,7 @@ public class UserManager extends Module {
         this.addUser(new User(admin.toLowerCase(), admin, points.getPoints(admin), 0, 0, AccessLevel.ADMIN));
         String[] superModerators = channelBot.getConfig().getStringArray("trustedUsers");
         for (String trustedUser : superModerators)
-            this.addUser(new User(trustedUser.toLowerCase(), trustedUser, points.getPoints(trustedUser), 0, 0, AccessLevel.SUPERMODERATOR));
+            this.addUser(new User(trustedUser.toLowerCase(), trustedUser, points.getPoints(trustedUser), 0, 0, AccessLevel.SUPERMOD));
     }
 
     public void setAccessLevel(String user, AccessLevel accessLevel) {

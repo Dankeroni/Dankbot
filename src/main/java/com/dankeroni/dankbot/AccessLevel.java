@@ -3,9 +3,9 @@ package com.dankeroni.dankbot;
 public enum AccessLevel {
 
     ADMIN(),
-    SUPERMODERATOR(),
-    MODERATOR(),
-    SUBSCRIBER(),
+    SUPERMOD(),
+    MOD(),
+    SUB(),
     USER()
 
 }

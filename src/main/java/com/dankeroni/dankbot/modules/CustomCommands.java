@@ -39,8 +39,8 @@ public class CustomCommands extends Module {
         }
 
         commands.addActionCommand(new ActionCommand("!rawcom", this::rawCommand, AccessLevel.USER, 2, 4));
-        commands.addActionCommand(new ActionCommand("!addcom", this::addCustomCommandToConfig, AccessLevel.SUPERMODERATOR, 1, 1));
-        commands.addActionCommand(new ActionCommand("!removecom", this::removeCustomCommand, AccessLevel.SUPERMODERATOR, 1, 1));
+        commands.addActionCommand(new ActionCommand("!addcom", this::addCustomCommandToConfig, AccessLevel.SUPERMOD, 1, 1));
+        commands.addActionCommand(new ActionCommand("!removecom", this::removeCustomCommand, AccessLevel.SUPERMOD, 1, 1));
     }
 
     public void rawCommand(String message, String sender, HashMap<String, String> tags) {

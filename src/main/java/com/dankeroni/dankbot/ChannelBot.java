@@ -20,7 +20,7 @@ public class ChannelBot extends PircBot {
     public String botName, oauth, admin, channel, commitHash, branch, path;
     public boolean silentMode, twitchChat, running = false, modded;
     public Random random = new Random();
-    public ModuleHandler moduleHandler = new ModuleHandler();
+    public Modules modules = new Modules();
     public Commands commands;
     public Config config;
     public int commitNumber;
@@ -30,7 +30,7 @@ public class ChannelBot extends PircBot {
     public Raffle raffle;
     public Points points;
     public Pyramids pyramids;
-    public UserManager userManager;
+    public Users users;
 
     public ChannelBot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
@@ -124,7 +124,7 @@ public class ChannelBot extends PircBot {
 
         this.log("Loading modules", LogLevel.DEBUG);
         this.loadModules();
-        userManager.loadUsers();
+        users.loadUsers();
 
         try {
             commitHash = this.readFromShellCommand("git rev-parse --short HEAD");
@@ -138,13 +138,13 @@ public class ChannelBot extends PircBot {
     }
 
     public void loadModules() {
-        moduleHandler.addModule(userManager = new UserManager(this));
-        moduleHandler.addModule(commands = new Commands(this));
-        commands.setUserManager(userManager);
-        userManager.setCommands(commands);
-        userManager.init();
+        modules.addModule(users = new Users(this));
+        modules.addModule(commands = new Commands(this));
+        commands.setUserManager(users);
+        users.setCommands(commands);
+        users.init();
 
-        moduleHandler.addModule(stop = new Stop(this));
+        modules.addModule(stop = new Stop(this));
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -153,19 +153,19 @@ public class ChannelBot extends PircBot {
         });
 
         if (config.getBoolean("Raffle", true))
-            moduleHandler.addModule(raffle = new Raffle(this));
+            modules.addModule(raffle = new Raffle(this));
 
         if (config.getBoolean("Eval", false))
-            moduleHandler.addModule(eval = new Eval(this));
+            modules.addModule(eval = new Eval(this));
 
         if (config.getBoolean("Points", true))
-            moduleHandler.addModule(points = new Points(this));
+            modules.addModule(points = new Points(this));
 
         if (config.getBoolean("Pyramids", true))
-            moduleHandler.addModule(pyramids = new Pyramids(this));
+            modules.addModule(pyramids = new Pyramids(this));
 
         if (config.getBoolean("CustomCommands", true))
-            moduleHandler.addModule(customCommands = new CustomCommands(this));
+            modules.addModule(customCommands = new CustomCommands(this));
     }
 
     public void channelMessage(String message) {
@@ -182,7 +182,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        moduleHandler.onChannelMessage(message, sender, tags);
+        modules.onChannelMessage(message, sender, tags);
     }
 
     public void onUserstateWithTags(String channel, HashMap<String, String> tags) {
@@ -212,7 +212,7 @@ public class ChannelBot extends PircBot {
     }
 
     public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        moduleHandler.onWhisperMessage(message, sender, tags);
+        modules.onWhisperMessage(message, sender, tags);
     }
 
     public void ban(String user) {
@@ -263,8 +263,8 @@ public class ChannelBot extends PircBot {
         System.out.println(Utils.logDate() + " " + Utils.detailedTime() + " " + logLevel + " " + line);
     }
 
-    public ModuleHandler getModuleHandler() {
-        return moduleHandler;
+    public Modules getModules() {
+        return modules;
     }
 
     public long getTimeStarted() {
@@ -323,8 +323,8 @@ public class ChannelBot extends PircBot {
         return points;
     }
 
-    public UserManager getUserManager() {
-        return userManager;
+    public Users getUsers() {
+        return users;
     }
 
     public Commands getCommands() {

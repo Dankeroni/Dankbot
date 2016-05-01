@@ -15,7 +15,7 @@ public class Raffle extends Module {
     public Raffle(ChannelBot channelBot) {
         super(channelBot);
 
-        commands.addActionCommand(new ActionCommand("!raffle", this::startRaffle, AccessLevel.MODERATOR, 0, 0));
+        commands.addActionCommand(new ActionCommand("!raffle", this::startRaffle, AccessLevel.MOD, 0, 0));
         commands.addActionCommand(new ActionCommand("!join", this::join, AccessLevel.USER, 0, 2));
     }
 

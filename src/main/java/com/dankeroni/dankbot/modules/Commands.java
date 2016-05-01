@@ -29,7 +29,7 @@ public class Commands extends Module {
                 Action action;
                 if ((action = actionCommand.getAction()) != null) action.accept(message, sender, tags);
 
-                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMOD))
                     this.putUserOnCooldown(actionCommand, sender);
                 this.putCommandOnCooldown(actionCommand);
             }
@@ -44,7 +44,7 @@ public class Commands extends Module {
                     if (whisper) channelBot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
                     else channelBot.formattedChannelMessage(unformattedMessage, sender, message, tags);
 
-                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMODERATOR))
+                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMOD))
                     this.putUserOnCooldown(messageCommand, sender);
                 this.putCommandOnCooldown(messageCommand);
             }
@@ -86,11 +86,11 @@ public class Commands extends Module {
     }
 
     public boolean commandReady(Command command, String user) {
-        return !command.isOnGlobalCooldown() || userManager.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
+        return !command.isOnGlobalCooldown() || userManager.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
     public boolean userReady(Command command, String user) {
-        return !command.getUsersOnCooldown().contains(user) || userManager.checkAccessLevel(user, AccessLevel.SUPERMODERATOR);
+        return !command.getUsersOnCooldown().contains(user) || userManager.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
     public void putCommandOnCooldown(Command command) {
@@ -115,7 +115,7 @@ public class Commands extends Module {
         return customCommands;
     }
 
-    public void setUserManager(UserManager userManager) {
-        this.userManager = userManager;
+    public void setUserManager(Users users) {
+        this.userManager = users;
     }
 }
