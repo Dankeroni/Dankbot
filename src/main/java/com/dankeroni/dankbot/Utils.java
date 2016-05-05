@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot;
 
-import com.dankeroni.dankbot.json.tmi.group.user.user.chatters.Chatters;
-import com.dankeroni.dankbot.json.tmi.group.user.user.chatters.Chatters_;
+import com.dankeroni.dankbot.json.twitch.tmi.group.user.user.chatters.Chatters;
+import com.dankeroni.dankbot.json.twitch.tmi.group.user.user.chatters.Chatters_;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

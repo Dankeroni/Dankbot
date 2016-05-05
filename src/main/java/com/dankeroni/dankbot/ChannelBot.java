@@ -1,6 +1,6 @@
 package com.dankeroni.dankbot;
 
-import com.dankeroni.dankbot.json.tmi.servers.Servers;
+import com.dankeroni.dankbot.json.twitch.tmi.servers.Servers;
 import com.dankeroni.dankbot.modules.*;
 import com.google.gson.Gson;
 import org.fusesource.jansi.AnsiConsole;
