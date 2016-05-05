@@ -1,4 +1,4 @@
-package com.dankeroni.dankbot;
+package com.dankeroni.dankbot.models;
 
 import java.util.HashMap;
 

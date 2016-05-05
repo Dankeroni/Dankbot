@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.ChannelBot;
-import com.dankeroni.dankbot.Module;
+import com.dankeroni.dankbot.models.Module;
 
 import java.util.HashMap;
 

@@ -1,6 +1,12 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.*;
+import com.dankeroni.dankbot.AccessLevel;
+import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.LogLevel;
+import com.dankeroni.dankbot.Utils;
+import com.dankeroni.dankbot.models.ActionCommand;
+import com.dankeroni.dankbot.models.MessageCommand;
+import com.dankeroni.dankbot.models.Module;
 
 import java.io.*;
 import java.nio.file.Files;

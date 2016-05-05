@@ -1,5 +1,6 @@
-package com.dankeroni.dankbot;
+package com.dankeroni.dankbot.models;
 
+import com.dankeroni.dankbot.ChannelBot;
 import com.dankeroni.dankbot.modules.Commands;
 import com.dankeroni.dankbot.modules.Users;
 

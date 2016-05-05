@@ -1,5 +1,7 @@
 package com.dankeroni.dankbot;
 
+import com.dankeroni.dankbot.models.Module;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

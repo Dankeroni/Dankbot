@@ -1,4 +1,6 @@
-package com.dankeroni.dankbot;
+package com.dankeroni.dankbot.models;
+
+import com.dankeroni.dankbot.AccessLevel;
 
 import java.util.ArrayList;
 

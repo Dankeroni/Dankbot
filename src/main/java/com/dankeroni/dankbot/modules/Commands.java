@@ -1,6 +1,10 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.*;
+import com.dankeroni.dankbot.AccessLevel;
+import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.LogLevel;
+import com.dankeroni.dankbot.Utils;
+import com.dankeroni.dankbot.models.*;
 
 import java.util.HashMap;
 

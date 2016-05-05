@@ -2,7 +2,12 @@ package com.dankeroni.dankbot.modules;
 
 import bsh.EvalError;
 import bsh.Interpreter;
-import com.dankeroni.dankbot.*;
+import com.dankeroni.dankbot.AccessLevel;
+import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.LogLevel;
+import com.dankeroni.dankbot.Utils;
+import com.dankeroni.dankbot.models.ActionCommand;
+import com.dankeroni.dankbot.models.Module;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

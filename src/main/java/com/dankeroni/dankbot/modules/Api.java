@@ -2,7 +2,7 @@ package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.ChannelBot;
 import com.dankeroni.dankbot.LogLevel;
-import com.dankeroni.dankbot.Module;
+import com.dankeroni.dankbot.models.Module;
 import com.google.gson.Gson;
 
 import static spark.Spark.get;
