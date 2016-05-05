@@ -74,6 +74,10 @@ public class Points extends Module {
         }
     }
 
+    public HashMap<String, Integer> getPointsList() {
+        return pointsList;
+    }
+
     public int getPoints(String user) {
         return pointsList.getOrDefault(user, 0);
     }

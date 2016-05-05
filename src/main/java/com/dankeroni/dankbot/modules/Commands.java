@@ -25,11 +25,11 @@ public class Commands extends Module {
         String commandName = message.split(" ")[0].toLowerCase();
         if (actionCommands.containsKey(commandName)) {
             ActionCommand actionCommand = actionCommands.get(commandName);
-            if (this.commandReady(actionCommand, sender) && userManager.checkAccessLevel(sender, actionCommand.getAccessLevel()) && this.userReady(actionCommand, sender)) {
+            if (this.commandReady(actionCommand, sender) && users.checkAccessLevel(sender, actionCommand.getAccessLevel()) && this.userReady(actionCommand, sender)) {
                 Action action;
                 if ((action = actionCommand.getAction()) != null) action.accept(message, sender, tags);
 
-                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMOD))
+                if (!users.checkAccessLevel(sender, AccessLevel.SUPERMOD))
                     this.putUserOnCooldown(actionCommand, sender);
                 this.putCommandOnCooldown(actionCommand);
             }
@@ -38,13 +38,13 @@ public class Commands extends Module {
         if (customCommands.containsKey(commandName) || messageCommands.containsKey(commandName)) {
             MessageCommand messageCommand = customCommands.get(commandName);
             messageCommand = messageCommands.getOrDefault(commandName, messageCommand);
-            if (this.commandReady(messageCommand, sender) && userManager.checkAccessLevel(sender, messageCommand.getAccessLevel()) && this.userReady(messageCommand, sender)) {
+            if (this.commandReady(messageCommand, sender) && users.checkAccessLevel(sender, messageCommand.getAccessLevel()) && this.userReady(messageCommand, sender)) {
                 String unformattedMessage;
                 if ((unformattedMessage = messageCommand.getMessage()) != null)
                     if (whisper) channelBot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
                     else channelBot.formattedChannelMessage(unformattedMessage, sender, message, tags);
 
-                if (!userManager.checkAccessLevel(sender, AccessLevel.SUPERMOD))
+                if (!users.checkAccessLevel(sender, AccessLevel.SUPERMOD))
                     this.putUserOnCooldown(messageCommand, sender);
                 this.putCommandOnCooldown(messageCommand);
             }
@@ -86,11 +86,11 @@ public class Commands extends Module {
     }
 
     public boolean commandReady(Command command, String user) {
-        return !command.isOnGlobalCooldown() || userManager.checkAccessLevel(user, AccessLevel.SUPERMOD);
+        return !command.isOnGlobalCooldown() || users.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
     public boolean userReady(Command command, String user) {
-        return !command.getUsersOnCooldown().contains(user) || userManager.checkAccessLevel(user, AccessLevel.SUPERMOD);
+        return !command.getUsersOnCooldown().contains(user) || users.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
     public void putCommandOnCooldown(Command command) {
@@ -116,6 +116,6 @@ public class Commands extends Module {
     }
 
     public void setUserManager(Users users) {
-        this.userManager = users;
+        this.users = users;
     }
 }

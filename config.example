@@ -31,6 +31,7 @@ CustomCommands = true
 Points = true
 Raffle = true
 Pyramids = true
+Api = false
 Eval = false
 
 

@@ -9,12 +9,12 @@ public abstract class Module {
 
     public ChannelBot channelBot;
     public Commands commands;
-    public Users userManager;
+    public Users users;
 
     public Module(ChannelBot channelBot) {
         this.channelBot = channelBot;
         this.commands = channelBot.getCommands();
-        this.userManager = channelBot.getUsers();
+        this.users = channelBot.getUsers();
     }
 
     public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {

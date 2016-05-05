@@ -31,6 +31,7 @@ public class ChannelBot extends PircBot {
     public Points points;
     public Pyramids pyramids;
     public Users users;
+    public Api api;
 
     public ChannelBot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
@@ -166,6 +167,9 @@ public class ChannelBot extends PircBot {
 
         if (config.getBoolean("CustomCommands", true))
             modules.addModule(customCommands = new CustomCommands(this));
+
+        if (config.getBoolean("Api", false))
+            modules.addModule(api = new Api(this));
     }
 
     public void channelMessage(String message) {
@@ -261,6 +265,9 @@ public class ChannelBot extends PircBot {
             return;
 
         System.out.println(Utils.logDate() + " " + Utils.detailedTime() + " " + logLevel + " " + line);
+    }
+
+    public void startApi() {
     }
 
     public Modules getModules() {
