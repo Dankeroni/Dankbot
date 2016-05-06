@@ -61,6 +61,10 @@ public class Points extends Module {
         pointsList.put(user.toLowerCase(), this.getPoints(user) + points);
     }
 
+    public void removePoints(String user, int points) {
+        pointsList.put(user.toLowerCase(), this.getPoints(user) - points);
+    }
+
     public void userPoints(String message, String sender, HashMap<String, String> tags) {
         bot.channelMessage(tags.get("display-name") + " has " + this.getPoints(sender) + " points");
     }

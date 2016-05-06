@@ -28,6 +28,7 @@ public class Bot extends PircBot {
     public Stop stop;
     public Eval eval;
     public Raffle raffle;
+    public Roulette roulette;
     public Points points;
     public Pyramids pyramids;
     public Users users;
@@ -155,6 +156,9 @@ public class Bot extends PircBot {
 
         if (config.getBoolean("Raffle", true))
             modules.addModule(raffle = new Raffle(this));
+
+        if (config.getBoolean("Roulette", true))
+            modules.addModule(roulette = new Roulette(this));
 
         if (config.getBoolean("Eval", false))
             modules.addModule(eval = new Eval(this));

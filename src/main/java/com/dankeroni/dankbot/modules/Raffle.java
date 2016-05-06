@@ -48,6 +48,7 @@ public class Raffle extends Module {
                 String winner = enteredUsers.get(random.nextInt(enteredUsers.size()));
                 bot.getPoints().addPoints(winner, rafflePoints);
                 bot.channelMessage("The raffle has finished! " + winner + " won " + rafflePoints + " points! Kappa");
+                bot.getPoints().savePoints();
             } else bot.channelMessage("Nobody entered the raffle.");
             raffleRunning = false;
         }, sleepTime * 4);

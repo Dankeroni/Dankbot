@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static spark.Spark.get;
+import static spark.Spark.port;
 import static spark.route.RouteOverview.enableRouteOverview;
 
 public class Api extends Module {
@@ -21,6 +22,7 @@ public class Api extends Module {
         super(bot);
 
         bot.log("Starting api", LogLevel.INFO);
+        port(80);
         enableRouteOverview();
         get("/api/users/:user", (req, res) -> gson.toJson(users.getUser(req.params(":user").toLowerCase())));
         get("/api/users", (req, res) -> {

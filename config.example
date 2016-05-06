@@ -30,6 +30,7 @@ silentMode = false
 CustomCommands = true
 Points = true
 Raffle = true
+Roulette = true
 Pyramids = true
 Api = false
 Eval = false
