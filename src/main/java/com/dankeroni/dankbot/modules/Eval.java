@@ -3,7 +3,7 @@ package com.dankeroni.dankbot.modules;
 import bsh.EvalError;
 import bsh.Interpreter;
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
@@ -21,24 +21,24 @@ public class Eval extends Module {
         BufferedReader commandLineReader = new BufferedReader(new InputStreamReader(System.in));
         String line;
 
-        while (channelBot.isRunning()) {
+        while (bot.isRunning()) {
             try {
                 if ((line = commandLineReader.readLine()) != null)
                     this.eval(line);
             } catch (Exception e) {
-                channelBot.log("Failed to evaluate expression", LogLevel.WARN);
+                bot.log("Failed to evaluate expression", LogLevel.WARN);
                 e.printStackTrace();
             }
         }
     };
 
-    public Eval(ChannelBot channelBot) {
-        super(channelBot);
+    public Eval(Bot bot) {
+        super(bot);
 
         try {
-            interpreter.set("bot", channelBot);
+            interpreter.set("bot", bot);
         } catch (EvalError evalError) {
-            channelBot.log("Error initializing Eval module", LogLevel.WARN);
+            bot.log("Error initializing Eval module", LogLevel.WARN);
             return;
         }
         Utils.runThreaded(commandLineInput);
@@ -52,7 +52,7 @@ public class Eval extends Module {
             try {
                 this.eval(messageParts[1]);
             } catch (Exception e) {
-                channelBot.channelMessage("Failed to evaluate expression");
+                bot.channelMessage("Failed to evaluate expression");
                 e.printStackTrace();
             }
         }

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
     public static boolean argsConfigured = false;
-    public static ChannelBot channelBot;
+    public static Bot bot;
     public static Config config;
     public static SimpleDateFormat time = new SimpleDateFormat("HH:mm");
     public static SimpleDateFormat detailedTime = new SimpleDateFormat("HH:mm:ss,SSS");
@@ -27,9 +27,9 @@ public class Utils {
         time.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
-    public static void setChannelBot(ChannelBot channelBot) {
-        Utils.channelBot = channelBot;
-        Utils.config = channelBot.getConfig();
+    public static void setBot(Bot bot) {
+        Utils.bot = bot;
+        Utils.config = bot.getConfig();
     }
 
     public static int clamp(int var, int min, int max) {
@@ -110,12 +110,12 @@ public class Utils {
             args.put("{detailedtime}", Utils::detailedTime);
             args.put("{date}", Utils::date);
             args.put("{botuptime}", Utils::botUpTime);
-            args.put("{botname}", (a, b, c) -> channelBot.getName());
-            args.put("{commitHash}", (a, b, c) -> channelBot.getCommitHash());
-            args.put("{commitNumber}", (a, b, c) -> String.valueOf(channelBot.getCommitNumber()));
-            args.put("{branch}", (a, b, c) -> channelBot.getBranch());
-            args.put("{admin}", (a, b, c) -> channelBot.getAdmin());
-            args.put("{channel}", (a, b, c) -> channelBot.getChannel());
+            args.put("{botname}", (a, b, c) -> bot.getName());
+            args.put("{commitHash}", (a, b, c) -> bot.getCommitHash());
+            args.put("{commitNumber}", (a, b, c) -> String.valueOf(bot.getCommitNumber()));
+            args.put("{branch}", (a, b, c) -> bot.getBranch());
+            args.put("{admin}", (a, b, c) -> bot.getAdmin());
+            args.put("{channel}", (a, b, c) -> bot.getChannel());
             args.put("{chattersCount}", (a, b, c) -> String.valueOf(chattersCount()));
 
             argsConfigured = true;
@@ -163,7 +163,7 @@ public class Utils {
     }
 
     public static String botUpTime(String message, String sender, HashMap<String, String> tags) {
-        long millis = System.currentTimeMillis() - channelBot.getTimeStarted();
+        long millis = System.currentTimeMillis() - bot.getTimeStarted();
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
@@ -200,7 +200,7 @@ public class Utils {
     public static ArrayList<ArrayList<String>> getAllChattersLists() {
         Chatters chatters = null;
         try {
-            chatters = new Gson().fromJson(Utils.readUrl("https://tmi.twitch.tv/group/user/" + channelBot.getChannel().substring(1) + "/chatters"), Chatters.class);
+            chatters = new Gson().fromJson(Utils.readUrl("https://tmi.twitch.tv/group/user/" + bot.getChannel().substring(1) + "/chatters"), Chatters.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

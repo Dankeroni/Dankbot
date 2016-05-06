@@ -1,6 +1,6 @@
 package com.dankeroni.dankbot.modules;
 
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.models.Module;
 
 import java.util.HashMap;
@@ -11,8 +11,8 @@ public class Pyramids extends Module {
     public int length = 0, maxLength = 0;
     public boolean countingUp = true;
 
-    public Pyramids(ChannelBot channelBot) {
-        super(channelBot);
+    public Pyramids(Bot bot) {
+        super(bot);
     }
 
     public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {
@@ -54,23 +54,23 @@ public class Pyramids extends Module {
 
         switch (maxLength) {
             case 2:
-                channelBot.channelMessage(tags.get("display-name") + ", 2-wide pyramids ResidentSleeper");
+                bot.channelMessage(tags.get("display-name") + ", 2-wide pyramids ResidentSleeper");
                 break;
 
             case 3:
-                channelBot.channelMessage(tags.get("display-name") + ", nice pyramid bro EleGiggle");
+                bot.channelMessage(tags.get("display-name") + ", nice pyramid bro EleGiggle");
                 break;
 
             case 4:
-                channelBot.channelMessage(tags.get("display-name") + ", not bad");
+                bot.channelMessage(tags.get("display-name") + ", not bad");
                 break;
 
             case 5:
-                channelBot.channelMessage(tags.get("display-name") + ", nice pyramid PogChamp");
+                bot.channelMessage(tags.get("display-name") + ", nice pyramid PogChamp");
                 break;
 
             default:
-                channelBot.channelMessage(tags.get("display-name") + ", " + maxLength + "-wide PogChamp");
+                bot.channelMessage(tags.get("display-name") + ", " + maxLength + "-wide PogChamp");
                 break;
         }
         this.resetPyramid();

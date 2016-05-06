@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
@@ -16,8 +16,8 @@ public class Raffle extends Module {
     public ArrayList<String> enteredUsers;
     public Random random = new Random();
 
-    public Raffle(ChannelBot channelBot) {
-        super(channelBot);
+    public Raffle(Bot bot) {
+        super(bot);
 
         commands.addActionCommand(new ActionCommand("!raffle", this::startRaffle, AccessLevel.MOD, 0, 0));
         commands.addActionCommand(new ActionCommand("!join", this::join, AccessLevel.USER, 0, 2));
@@ -38,17 +38,17 @@ public class Raffle extends Module {
 
         raffleRunning = true;
         enteredUsers = new ArrayList<>();
-        channelBot.channelMessage("A raffle has begun for " + rafflePoints + " points. Type !join to join the raffle! The raffle will end in " + raffleTime + " seconds");
+        bot.channelMessage("A raffle has begun for " + rafflePoints + " points. Type !join to join the raffle! The raffle will end in " + raffleTime + " seconds");
         long sleepTime = (long) (raffleTime * 1000 * 0.25);
-        Utils.runDelayed(() -> channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.75) + " seconds! Type !join to join the raffle!"), sleepTime);
-        Utils.runDelayed(() -> channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.50) + " seconds! Type !join to join the raffle!"), sleepTime * 2);
-        Utils.runDelayed(() -> channelBot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.25) + " seconds! Type !join to join the raffle!"), sleepTime * 3);
+        Utils.runDelayed(() -> bot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.75) + " seconds! Type !join to join the raffle!"), sleepTime);
+        Utils.runDelayed(() -> bot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.50) + " seconds! Type !join to join the raffle!"), sleepTime * 2);
+        Utils.runDelayed(() -> bot.channelMessage("The raffle for " + rafflePoints + " points ends in " + (int) (raffleTime * 0.25) + " seconds! Type !join to join the raffle!"), sleepTime * 3);
         Utils.runDelayed(() -> {
             if (enteredUsers.size() > 0) {
                 String winner = enteredUsers.get(random.nextInt(enteredUsers.size()));
-                channelBot.getPoints().addPoints(winner, rafflePoints);
-                channelBot.channelMessage("The raffle has finished! " + winner + " won " + rafflePoints + " points! Kappa");
-            } else channelBot.channelMessage("Nobody entered the raffle.");
+                bot.getPoints().addPoints(winner, rafflePoints);
+                bot.channelMessage("The raffle has finished! " + winner + " won " + rafflePoints + " points! Kappa");
+            } else bot.channelMessage("Nobody entered the raffle.");
             raffleRunning = false;
         }, sleepTime * 4);
     }

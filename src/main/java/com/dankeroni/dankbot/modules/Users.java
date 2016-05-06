@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.models.Module;
 import com.dankeroni.dankbot.models.User;
@@ -12,19 +12,19 @@ public class Users extends Module {
 
     public HashMap<String, User> users = new HashMap<>();
 
-    public Users(ChannelBot channelBot) throws NullPointerException {
-        super(channelBot);
+    public Users(Bot bot) throws NullPointerException {
+        super(bot);
     }
 
     public void init() {
     }
 
     public void loadUsers() {
-        channelBot.log("Loading users", LogLevel.DEBUG);
-        String admin = channelBot.getAdmin();
-        Points points = channelBot.getPoints();
+        bot.log("Loading users", LogLevel.DEBUG);
+        String admin = bot.getAdmin();
+        Points points = bot.getPoints();
         this.addUser(new User(admin.toLowerCase(), admin, points.getPoints(admin), 0, 0, AccessLevel.ADMIN));
-        String[] superModerators = channelBot.getConfig().getStringArray("trustedUsers");
+        String[] superModerators = bot.getConfig().getStringArray("trustedUsers");
         for (String trustedUser : superModerators)
             this.addUser(new User(trustedUser.toLowerCase(), trustedUser, points.getPoints(trustedUser), 0, 0, AccessLevel.SUPERMOD));
     }

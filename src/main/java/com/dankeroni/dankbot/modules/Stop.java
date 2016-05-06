@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
@@ -11,8 +11,8 @@ import java.util.HashMap;
 
 public class Stop extends Module {
 
-    public Stop(ChannelBot channelBot) {
-        super(channelBot);
+    public Stop(Bot bot) {
+        super(bot);
 
         commands.addActionCommand(new ActionCommand("!stop", this::stop, AccessLevel.ADMIN, 5, 5));
     }
@@ -22,24 +22,24 @@ public class Stop extends Module {
     }
 
     public void stop(String message, String sender, HashMap<String, String> tags) {
-        if (!channelBot.isRunning()) return;
+        if (!bot.isRunning()) return;
 
-        channelBot.log("Dankbot stopping!", LogLevel.INFO);
-        String commitHash = channelBot.getCommitHash();
-        int commitNumber = channelBot.getCommitNumber();
+        bot.log("Dankbot stopping!", LogLevel.INFO);
+        String commitHash = bot.getCommitHash();
+        int commitNumber = bot.getCommitNumber();
 
         if (!commitHash.trim().isEmpty() && !(commitNumber == 0)) {
-            channelBot.channelMessage("/me commit " + commitHash + " number " + commitNumber + " leaving MrDestructoid");
+            bot.channelMessage("/me commit " + commitHash + " number " + commitNumber + " leaving MrDestructoid");
         } else {
-            channelBot.channelMessage("/me leaving MrDestructoid");
+            bot.channelMessage("/me leaving MrDestructoid");
         }
 
         Utils.runDelayed(() -> {
-            channelBot.disconnect();
-            channelBot.dispose();
+            bot.disconnect();
+            bot.dispose();
             spark.Spark.stop();
-            channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
-            channelBot.setRunning(false);
+            bot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
+            bot.setRunning(false);
         }, 500, false);
     }
 }

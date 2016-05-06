@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class ChannelBot extends PircBot {
+public class Bot extends PircBot {
 
     public long timeStarted = System.currentTimeMillis();
     public String botName, oauth, admin, channel, commitHash, branch, path;
@@ -33,16 +33,16 @@ public class ChannelBot extends PircBot {
     public Users users;
     public Api api;
 
-    public ChannelBot(String path) {
+    public Bot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
         start();
     }
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            new ChannelBot("./");
+            new Bot("./");
         } else {
-            new ChannelBot(args[0]);
+            new Bot(args[0]);
         }
     }
 
@@ -77,7 +77,7 @@ public class ChannelBot extends PircBot {
         this.log("Channel: " + config.getString("channel"), LogLevel.DEBUG);
         this.log("Admin: " + config.getString("admin"), LogLevel.DEBUG);
 
-        Utils.setChannelBot(this);
+        Utils.setBot(this);
         setName(botName);
         setVerbose(true);
 

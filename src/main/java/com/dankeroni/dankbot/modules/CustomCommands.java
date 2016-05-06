@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
@@ -18,16 +18,16 @@ import java.util.stream.Stream;
 
 public class CustomCommands extends Module {
 
-    public Path commandFile = Paths.get(channelBot.getPath() + "save.commands");
-    public File commandFile2 = new File(channelBot.getPath() + "save.commands");
+    public Path commandFile = Paths.get(bot.getPath() + "save.commands");
+    public File commandFile2 = new File(bot.getPath() + "save.commands");
     public boolean commandFileExists;
 
-    public CustomCommands(ChannelBot channelBot) {
-        super(channelBot);
+    public CustomCommands(Bot bot) {
+        super(bot);
 
         if (commandFile2.exists()) {
             commandFileExists = true;
-            channelBot.log("Loading custom commands", LogLevel.DEBUG);
+            bot.log("Loading custom commands", LogLevel.DEBUG);
             try (Stream<String> lines = Files.lines(commandFile)) {
                 lines.forEachOrdered(line -> this.addCustomCommand("!addcom " + line, false));
             } catch (IOException e) {
@@ -35,11 +35,11 @@ public class CustomCommands extends Module {
             }
         } else {
             try {
-                channelBot.log("Commands file not found, generating new one", LogLevel.INFO);
+                bot.log("Commands file not found, generating new one", LogLevel.INFO);
                 commandFileExists = commandFile2.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                channelBot.log("Unable to generate commands file, custom commands will not work until you fix the problem and restart the bot!", LogLevel.WARN);
+                bot.log("Unable to generate commands file, custom commands will not work until you fix the problem and restart the bot!", LogLevel.WARN);
                 commandFileExists = false;
             }
         }
@@ -54,9 +54,9 @@ public class CustomCommands extends Module {
             String commandName = Utils.makeArgs(message)[0];
             MessageCommand command = commands.getCustomCommands().get(commandName);
             command = commands.getMessageCommands().getOrDefault(commandName, command);
-            channelBot.channelMessage(command.getMessage());
+            bot.channelMessage(command.getMessage());
         } catch (NullPointerException e) {
-            channelBot.channelMessage("This command doesn't exist!");
+            bot.channelMessage("This command doesn't exist!");
         }
     }
 
@@ -85,7 +85,7 @@ public class CustomCommands extends Module {
         String commandName = message.split(" ")[1];
         if (!commandFileExists || !commands.removeCustomCommand(commandName)) return;
 
-        File tempFile = new File(channelBot.getPath() + "save_temp.commands");
+        File tempFile = new File(bot.getPath() + "save_temp.commands");
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(commandFile2));
@@ -101,10 +101,10 @@ public class CustomCommands extends Module {
             reader.close();
             Files.deleteIfExists(commandFile);
             if (!tempFile.renameTo(commandFile2))
-                channelBot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
+                bot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         } catch (IOException e) {
             e.printStackTrace();
-            channelBot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
+            bot.log("Removing custom command from datafile failed, try cleaning it up manually", LogLevel.WARN);
         }
     }
 }

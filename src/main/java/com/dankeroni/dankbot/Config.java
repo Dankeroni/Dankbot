@@ -9,10 +9,10 @@ public class Config {
     public Properties properties;
     public String file;
     public String[] requiredOptions;
-    public ChannelBot channelBot;
+    public Bot bot;
 
-    public Config(ChannelBot channelBot, String file) {
-        this.channelBot = channelBot;
+    public Config(Bot bot, String file) {
+        this.bot = bot;
         this.file = file;
     }
 
@@ -22,7 +22,7 @@ public class Config {
             properties.load(reader);
         } catch (IOException e) {
             e.printStackTrace();
-            channelBot.log("config.properties not found!", LogLevel.ERROR);
+            bot.log("config.properties not found!", LogLevel.ERROR);
         }
     }
 

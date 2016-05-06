@@ -1,7 +1,7 @@
 package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.AccessLevel;
-import com.dankeroni.dankbot.ChannelBot;
+import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.*;
@@ -13,8 +13,8 @@ public class Commands extends Module {
     public HashMap<String, ActionCommand> actionCommands = new HashMap<>();
     public HashMap<String, MessageCommand> messageCommands = new HashMap<>(), customCommands = new HashMap<>();
 
-    public Commands(ChannelBot channelBot) throws NullPointerException {
-        super(channelBot);
+    public Commands(Bot bot) throws NullPointerException {
+        super(bot);
     }
 
     public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {
@@ -45,8 +45,8 @@ public class Commands extends Module {
             if (this.commandReady(messageCommand, sender) && users.checkAccessLevel(sender, messageCommand.getAccessLevel()) && this.userReady(messageCommand, sender)) {
                 String unformattedMessage;
                 if ((unformattedMessage = messageCommand.getMessage()) != null)
-                    if (whisper) channelBot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
-                    else channelBot.formattedChannelMessage(unformattedMessage, sender, message, tags);
+                    if (whisper) bot.formattedWhisperMessage(unformattedMessage, sender, message, tags);
+                    else bot.formattedChannelMessage(unformattedMessage, sender, message, tags);
 
                 if (!users.checkAccessLevel(sender, AccessLevel.SUPERMOD))
                     this.putUserOnCooldown(messageCommand, sender);
@@ -72,7 +72,7 @@ public class Commands extends Module {
     public boolean addCustomCommand(MessageCommand command, boolean log) {
         if (doesNotContainCommand(command)) {
             customCommands.put(command.getCommand().toLowerCase(), command);
-            if (log) channelBot.log("Added custom command \"" + command.getCommand() + "\"", LogLevel.DEBUG);
+            if (log) bot.log("Added custom command \"" + command.getCommand() + "\"", LogLevel.DEBUG);
             return true;
         } else return false;
     }
@@ -80,7 +80,7 @@ public class Commands extends Module {
     public boolean removeCustomCommand(String commandName) {
         if (customCommands.containsKey(commandName.toLowerCase())) {
             customCommands.remove(commandName.toLowerCase());
-            channelBot.log("Removed custom command \"" + commandName + "\"", LogLevel.DEBUG);
+            bot.log("Removed custom command \"" + commandName + "\"", LogLevel.DEBUG);
             return true;
         } else return false;
     }
