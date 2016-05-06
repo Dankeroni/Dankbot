@@ -132,7 +132,7 @@ public class Bot extends PircBot {
             commitNumber = Integer.parseInt(this.readFromShellCommand("git rev-list --count HEAD"));
             this.channelMessage("/me commit " + commitHash + " number " + commitNumber + " joining MrDestructoid");
 
-            branch = readFromShellCommand("git branch").substring(2);
+            branch = readFromShellCommand("git rev-parse --abbrev-ref HEAD");
         } catch (Exception e) {
             this.channelMessage("/me joining MrDestructoid");
         }
