@@ -37,6 +37,7 @@ public class Stop extends Module {
         Utils.runDelayed(() -> {
             channelBot.disconnect();
             channelBot.dispose();
+            spark.Spark.stop();
             channelBot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
             channelBot.setRunning(false);
         }, 500, false);

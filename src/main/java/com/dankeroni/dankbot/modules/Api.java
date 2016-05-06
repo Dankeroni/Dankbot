@@ -2,8 +2,13 @@ package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.ChannelBot;
 import com.dankeroni.dankbot.LogLevel;
+import com.dankeroni.dankbot.json.dankbot.api.users.Users;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.User;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static spark.Spark.get;
 import static spark.route.RouteOverview.enableRouteOverview;
@@ -17,8 +22,13 @@ public class Api extends Module {
 
         channelBot.log("Starting api", LogLevel.INFO);
         enableRouteOverview();
-        get("/users/:user", (req, res) -> gson.toJson(users.getUser(req.params(":user").toLowerCase())));
-        get("/points", (req, res) -> gson.toJson(channelBot.getPoints().getPointsList()));
+        get("/api/users/:user", (req, res) -> gson.toJson(users.getUser(req.params(":user").toLowerCase())));
+        get("/api/users", (req, res) -> {
+            Users users = new Users();
+            HashMap<String, User> userHashMap = this.users.getUsers();
+            users.users = new ArrayList<>(userHashMap.values());
+            return gson.toJson(users);
+        });
+        get("/api/points", (req, res) -> gson.toJson(channelBot.getPoints().getPointsList()));
     }
-
 }

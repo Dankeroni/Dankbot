@@ -70,4 +70,8 @@ public class Users extends Module {
     public void setCommands(Commands commands) {
         this.commands = commands;
     }
+
+    public HashMap<String, User> getUsers() {
+        return users;
+    }
 }
