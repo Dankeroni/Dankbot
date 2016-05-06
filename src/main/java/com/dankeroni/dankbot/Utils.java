@@ -76,8 +76,10 @@ public class Utils {
 
     public static void runDelayed(Runnable runnable, long millis, boolean daemon) {
         runThreaded(() -> {
-            long started = System.currentTimeMillis();
-            while (System.currentTimeMillis() - started < millis) ;
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException ignored) {
+            }
             runnable.run();
         }, daemon);
     }
