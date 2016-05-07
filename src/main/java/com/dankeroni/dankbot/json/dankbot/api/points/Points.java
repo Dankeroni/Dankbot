@@ -1,12 +1,11 @@
-package com.dankeroni.dankbot.json.dankbot.api.users;
+package com.dankeroni.dankbot.json.dankbot.api.points;
 
-import com.dankeroni.dankbot.models.User;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class Users {
+public class Points {
 
     @SerializedName("status")
     @Expose

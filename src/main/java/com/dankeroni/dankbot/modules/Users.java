@@ -67,6 +67,10 @@ public class Users extends Module {
             users.remove(name);
     }
 
+    public boolean userExists(String user) {
+        return users.containsKey(user.toLowerCase());
+    }
+
     public void setCommands(Commands commands) {
         this.commands = commands;
     }
