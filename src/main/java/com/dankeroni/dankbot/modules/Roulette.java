@@ -34,7 +34,7 @@ public class Roulette extends Module {
             return;
         }
 
-        random.setSeed(System.currentTimeMillis());
+        random.setSeed(System.nanoTime());
         if (random.nextInt(2) == 1) {
             points.addPoints(sender, bet);
             bot.channelMessage(displayName + " won " + bet + " points in roulette and now has " + (userPoints + bet) + " points PogChamp");
