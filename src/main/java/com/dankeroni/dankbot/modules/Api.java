@@ -4,8 +4,6 @@ import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.json.dankbot.api.NotFoundError;
-import com.dankeroni.dankbot.json.dankbot.api.points.Points;
-import com.dankeroni.dankbot.json.dankbot.api.users.Users;
 import com.dankeroni.dankbot.models.Module;
 import com.dankeroni.dankbot.models.User;
 import com.google.gson.Gson;
@@ -27,7 +25,7 @@ public class Api extends Module {
     users1 = (request, response) -> {
         HashMap<String, User> userHashMap = users.getUsers();
         if (!userHashMap.isEmpty()) {
-            Users users = new Users();
+            com.dankeroni.dankbot.json.dankbot.api.users.Users users = new com.dankeroni.dankbot.json.dankbot.api.users.Users();
             users.users = new ArrayList<>(userHashMap.values());
             return gson.toJson(users);
         } else {
@@ -37,7 +35,7 @@ public class Api extends Module {
         }
     },
 
-    user = (request, response) -> {
+    usersUser = (request, response) -> {
         String user = request.params(":user");
         if (users.userExists(user)) {
             User user1 = users.getUser(user);
@@ -54,7 +52,7 @@ public class Api extends Module {
     points = (request, response) -> {
         HashMap<String, Integer> pointsList = bot.points.getPointsList();
         if (!pointsList.isEmpty()) {
-            Points points1 = new Points();
+            com.dankeroni.dankbot.json.dankbot.api.points.Points points1 = new com.dankeroni.dankbot.json.dankbot.api.points.Points();
             for (HashMap.Entry<String, Integer> entry : pointsList.entrySet()) {
                 com.dankeroni.dankbot.json.dankbot.api.points.User user = new com.dankeroni.dankbot.json.dankbot.api.points.User();
                 user.name = entry.getKey();
@@ -67,6 +65,18 @@ public class Api extends Module {
             notFoundError.message = "No users found";
             return gson.toJson(notFoundError);
         }
+    },
+
+    pointsUser = (request, response) -> {
+        HashMap<String, Integer> pointsList = bot.points.getPointsList();
+        String user = request.params(":user").toLowerCase();
+        if (pointsList.containsKey(user)) {
+            return gson.toJson(new com.dankeroni.dankbot.json.dankbot.api.points.user.User(user, pointsList.get(user)));
+        } else {
+            NotFoundError notFoundError = new NotFoundError();
+            notFoundError.message = "User not found";
+            return gson.toJson(notFoundError);
+        }
     };
 
     public Api(Bot bot) {
@@ -76,8 +86,9 @@ public class Api extends Module {
         port(80);
         enableRouteOverview();
         get("/", root);
-        get("/api/users/:user", user);
+        get("/api/users/:user", usersUser);
         get("/api/users", users1);
         get("/api/points", points);
+        get("/api/points/:user", pointsUser);
     }
 }

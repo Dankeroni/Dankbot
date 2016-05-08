@@ -22,4 +22,9 @@ public class User {
     @SerializedName("points")
     @Expose
     public int points;
+
+    public User(String name, int points) {
+        this.name = name;
+        this.points = points;
+    }
 }
