@@ -40,7 +40,7 @@ public class Api extends Module {
         if (users.userExists(user)) {
             User user1 = users.getUser(user);
             return gson.toJson(new com.dankeroni.dankbot.json.dankbot.api.users.user.User(
-                user1.name, user1.displayName, user1.points, user1.timeoffline, user1.timeonline, user1.accessLevel
+                user1.name, user1.displayName, user1.points, user1.timeOffline, user1.timeOnline, user1.accessLevel
             ));
         } else {
             NotFoundError notFoundError = new NotFoundError();

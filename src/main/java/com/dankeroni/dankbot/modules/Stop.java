@@ -7,6 +7,7 @@ import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class Stop extends Module {
@@ -37,6 +38,11 @@ public class Stop extends Module {
         Utils.runDelayed(() -> {
             bot.disconnect();
             bot.dispose();
+            try {
+                bot.getDatabase().getConnection().close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             spark.Spark.stop();
             bot.log(String.format("Log end: %s %s", Utils.date(), Utils.detailedTime()), LogLevel.DEBUG);
             bot.setRunning(false);

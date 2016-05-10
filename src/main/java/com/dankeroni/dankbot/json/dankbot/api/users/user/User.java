@@ -22,24 +22,24 @@ public class User {
     @Expose
     public int points;
 
-    @SerializedName("timeoffline")
+    @SerializedName("timeOffline")
     @Expose
-    public long timeoffline;
+    public long timeOffline;
 
-    @SerializedName("timeonline")
+    @SerializedName("timeOnline")
     @Expose
-    public long timeonline;
+    public long timeOnline;
 
     @SerializedName("accessLevel")
     @Expose
     public AccessLevel accessLevel;
 
-    public User(String name, String displayName, int points, long timeoffline, long timeonline, AccessLevel accessLevel) {
+    public User(String name, String displayName, int points, long timeOffline, long timeOnline, AccessLevel accessLevel) {
         this.name = name;
         this.displayName = displayName;
         this.points = points;
-        this.timeoffline = timeoffline;
-        this.timeonline = timeonline;
+        this.timeOffline = timeOffline;
+        this.timeOnline = timeOnline;
         this.accessLevel = accessLevel;
     }
 }

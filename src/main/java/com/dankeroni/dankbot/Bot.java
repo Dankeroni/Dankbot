@@ -33,6 +33,7 @@ public class Bot extends PircBot {
     public Pyramids pyramids;
     public Users users;
     public Api api;
+    public Database database;
 
     public Bot(String path) {
         this.path = path.endsWith("/") ? path : path + "/";
@@ -57,7 +58,7 @@ public class Bot extends PircBot {
         this.log("Dankbot starting!", LogLevel.INFO);
 
         config = new Config(this, path + "config.properties");
-        config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel"});
+        config.setRequiredOptions(new String[]{"botName", "oauth", "admin", "channel", "db.url", "db.username", "db.password"});
         this.log("Loading config file", LogLevel.DEBUG);
         config.loadConfig();
 
@@ -137,14 +138,13 @@ public class Bot extends PircBot {
         } catch (Exception e) {
             this.channelMessage("/me joining MrDestructoid");
         }
+        this.log("dankbot started in " + (System.currentTimeMillis() - timeStarted) + "ms", LogLevel.INFO);
     }
 
     public void loadModules() {
+        modules.addModule(database = new Database(this));
         modules.addModule(users = new Users(this));
         modules.addModule(commands = new Commands(this));
-        commands.setUserManager(users);
-        users.setCommands(commands);
-        users.init();
 
         modules.addModule(stop = new Stop(this));
 
@@ -271,9 +271,6 @@ public class Bot extends PircBot {
         System.out.println(Utils.logDate() + " " + Utils.detailedTime() + " " + logLevel + " " + line);
     }
 
-    public void startApi() {
-    }
-
     public Modules getModules() {
         return modules;
     }
@@ -348,5 +345,9 @@ public class Bot extends PircBot {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public Database getDatabase() {
+        return database;
     }
 }

@@ -16,9 +16,6 @@ public class Users extends Module {
         super(bot);
     }
 
-    public void init() {
-    }
-
     public void loadUsers() {
         bot.log("Loading users", LogLevel.DEBUG);
         String admin = bot.getAdmin();
@@ -69,10 +66,6 @@ public class Users extends Module {
 
     public boolean userExists(String user) {
         return users.containsKey(user.toLowerCase());
-    }
-
-    public void setCommands(Commands commands) {
-        this.commands = commands;
     }
 
     public HashMap<String, User> getUsers() {

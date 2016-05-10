@@ -12,6 +12,11 @@ channel = Channel
 #The name of the bot's admin(probably your twitch name)
 admin = Admin
 
+#Database
+db.url = jdbc:mysql://hostname:port/database
+db.username = username
+db.password = password
+
 #Users with superModerator access level
 superModerators =
 

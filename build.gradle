@@ -15,6 +15,7 @@ dependencies {
     compile "com.github.Dankeroni:PircBot:v1.1"
     compile "com.sparkjava:spark-core:2.5"
     compile "org.slf4j:slf4j-simple:1.7.21"
+    compile "mysql:mysql-connector-java:6.0.2"
 }
 
 jar {

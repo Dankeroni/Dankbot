@@ -6,15 +6,15 @@ public class User {
 
     public String name, displayName;
     public int points;
-    public long timeonline, timeoffline;
+    public long timeOnline, timeOffline;
     public AccessLevel accessLevel;
 
-    public User(String name, String displayName, int points, long timeonline, long timeoffline, AccessLevel accessLevel) {
+    public User(String name, String displayName, int points, long timeOnline, long timeOffline, AccessLevel accessLevel) {
         this.name = name;
         this.displayName = displayName;
         this.points = points;
-        this.timeonline = timeonline;
-        this.timeoffline = timeoffline;
+        this.timeOnline = timeOnline;
+        this.timeOffline = timeOffline;
         this.accessLevel = accessLevel;
     }
 }

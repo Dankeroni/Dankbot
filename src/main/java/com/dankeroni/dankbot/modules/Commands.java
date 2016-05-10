@@ -26,6 +26,7 @@ public class Commands extends Module {
     }
 
     public void handleMessage(String message, String sender, HashMap<String, String> tags, boolean whisper) {
+        users = bot.getUsers();
         String commandName = message.split(" ")[0].toLowerCase();
         if (actionCommands.containsKey(commandName)) {
             ActionCommand actionCommand = actionCommands.get(commandName);
@@ -90,10 +91,12 @@ public class Commands extends Module {
     }
 
     public boolean commandReady(Command command, String user) {
+        users = bot.getUsers();
         return !command.isOnGlobalCooldown() || users.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
     public boolean userReady(Command command, String user) {
+        users = bot.getUsers();
         return !command.getUsersOnCooldown().contains(user) || users.checkAccessLevel(user, AccessLevel.SUPERMOD);
     }
 
@@ -117,9 +120,5 @@ public class Commands extends Module {
 
     public HashMap<String, MessageCommand> getCustomCommands() {
         return customCommands;
-    }
-
-    public void setUserManager(Users users) {
-        this.users = users;
     }
 }
