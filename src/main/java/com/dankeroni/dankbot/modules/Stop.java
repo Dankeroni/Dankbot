@@ -6,9 +6,9 @@ import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 
 public class Stop extends Module {
 
@@ -22,7 +22,7 @@ public class Stop extends Module {
         this.stop(null, null, null);
     }
 
-    public void stop(String message, String sender, HashMap<String, String> tags) {
+    public void stop(String message, String sender, TwitchTags tags) {
         if (!bot.isRunning()) return;
 
         bot.log("Dankbot stopping!", LogLevel.INFO);
@@ -40,7 +40,7 @@ public class Stop extends Module {
             bot.dispose();
             try {
                 bot.getDatabase().getConnection().close();
-            } catch (SQLException e) {
+            } catch (NullPointerException | SQLException e) {
                 e.printStackTrace();
             }
             spark.Spark.stop();

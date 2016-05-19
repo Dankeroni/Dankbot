@@ -8,10 +8,10 @@ import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 
 public class Eval extends Module {
 
@@ -46,7 +46,7 @@ public class Eval extends Module {
         commands.addActionCommand(new ActionCommand("!eval", this::evalFromMessage, AccessLevel.ADMIN, 0, 0));
     }
 
-    public void evalFromMessage(String message, String sender, HashMap<String, String> tags) {
+    public void evalFromMessage(String message, String sender, TwitchTags tags) {
         String[] messageParts = message.split(" ", 2);
         if (messageParts.length > 1 && !messageParts[1].isEmpty()) {
             try {

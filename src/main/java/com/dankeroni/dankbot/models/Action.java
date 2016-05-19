@@ -1,9 +1,7 @@
 package com.dankeroni.dankbot.models;
 
-import java.util.HashMap;
-
 @FunctionalInterface
 public interface Action {
 
-    void accept(String message, String sender, HashMap<String, String> tags);
+    void accept(String message, String sender, TwitchTags tags);
 }

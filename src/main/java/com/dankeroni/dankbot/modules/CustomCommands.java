@@ -7,13 +7,13 @@ import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.MessageCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class CustomCommands extends Module {
@@ -49,7 +49,7 @@ public class CustomCommands extends Module {
         commands.addActionCommand(new ActionCommand("!removecom", this::removeCustomCommand, AccessLevel.SUPERMOD, 1, 1));
     }
 
-    public void rawCommand(String message, String sender, HashMap<String, String> tags) {
+    public void rawCommand(String message, String sender, TwitchTags tags) {
         try {
             String commandName = Utils.makeArgs(message)[0];
             MessageCommand command = commands.getCustomCommands().get(commandName);
@@ -71,7 +71,7 @@ public class CustomCommands extends Module {
         return command.isEmpty() || response.isEmpty() || commands.addCustomCommand(new MessageCommand(command, response, AccessLevel.USER, 4, 10), log);
     }
 
-    public void addCustomCommandToConfig(String message, String sender, HashMap<String, String> tags) {
+    public void addCustomCommandToConfig(String message, String sender, TwitchTags tags) {
         if (commandFileExists && addCustomCommand(message)) {
             try {
                 Files.write(commandFile, (String.join(" ", (CharSequence[]) Utils.makeArgs(message)) + System.getProperty("line.separator")).getBytes(), StandardOpenOption.APPEND);
@@ -81,7 +81,7 @@ public class CustomCommands extends Module {
         }
     }
 
-    public void removeCustomCommand(String message, String sender, HashMap<String, String> tags) {
+    public void removeCustomCommand(String message, String sender, TwitchTags tags) {
         String commandName = message.split(" ")[1];
         if (!commandFileExists || !commands.removeCustomCommand(commandName)) return;
 

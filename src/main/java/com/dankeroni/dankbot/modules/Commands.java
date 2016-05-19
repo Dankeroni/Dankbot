@@ -17,15 +17,15 @@ public class Commands extends Module {
         super(bot);
     }
 
-    public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {
+    public void onChannelMessage(String message, String sender, TwitchTags tags) {
         this.handleMessage(message, sender, tags, false);
     }
 
-    public void onWhisperMessage(String message, String sender, HashMap<String, String> tags) {
+    public void onWhisperMessage(String message, String sender, TwitchTags tags) {
         this.handleMessage(message, sender, tags, true);
     }
 
-    public void handleMessage(String message, String sender, HashMap<String, String> tags, boolean whisper) {
+    public void handleMessage(String message, String sender, TwitchTags tags, boolean whisper) {
         users = bot.getUsers();
         String commandName = message.split(" ")[0].toLowerCase();
         if (actionCommands.containsKey(commandName)) {

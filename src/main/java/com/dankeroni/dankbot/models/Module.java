@@ -4,8 +4,6 @@ import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.modules.Commands;
 import com.dankeroni.dankbot.modules.Users;
 
-import java.util.HashMap;
-
 public abstract class Module {
 
     public Bot bot;
@@ -18,9 +16,9 @@ public abstract class Module {
         this.users = bot.getUsers();
     }
 
-    public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {
+    public void onChannelMessage(String message, String sender, TwitchTags tags) {
     }
 
-    public void onWhisperMessage(String message, String sender, HashMap<String, String> tags) {
+    public void onWhisperMessage(String message, String sender, TwitchTags tags) {
     }
 }

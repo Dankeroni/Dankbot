@@ -2,8 +2,7 @@ package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.models.Module;
-
-import java.util.HashMap;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 public class Pyramids extends Module {
 
@@ -15,7 +14,7 @@ public class Pyramids extends Module {
         super(bot);
     }
 
-    public void onChannelMessage(String message, String sender, HashMap<String, String> tags) {
+    public void onChannelMessage(String message, String sender, TwitchTags tags) {
         String[] messageParts = message.split(" ");
         String messageWord = messageParts[0];
 
@@ -54,23 +53,23 @@ public class Pyramids extends Module {
 
         switch (maxLength) {
             case 2:
-                bot.channelMessage(tags.get("display-name") + ", 2-wide pyramids ResidentSleeper");
+                bot.channelMessage(tags.displayName + ", 2-wide pyramids ResidentSleeper");
                 break;
 
             case 3:
-                bot.channelMessage(tags.get("display-name") + ", nice pyramid bro EleGiggle");
+                bot.channelMessage(tags.displayName + ", nice pyramid bro EleGiggle");
                 break;
 
             case 4:
-                bot.channelMessage(tags.get("display-name") + ", not bad");
+                bot.channelMessage(tags.displayName + ", not bad");
                 break;
 
             case 5:
-                bot.channelMessage(tags.get("display-name") + ", nice pyramid PogChamp");
+                bot.channelMessage(tags.displayName + ", nice pyramid PogChamp");
                 break;
 
             default:
-                bot.channelMessage(tags.get("display-name") + ", " + maxLength + "-wide PogChamp");
+                bot.channelMessage(tags.displayName + ", " + maxLength + "-wide PogChamp");
                 break;
         }
         this.resetPyramid();

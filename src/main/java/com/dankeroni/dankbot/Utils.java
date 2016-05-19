@@ -2,6 +2,7 @@ package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.twitch.tmi.group.user.user.chatters.Chatters;
 import com.dankeroni.dankbot.json.twitch.tmi.group.user.user.chatters.Chatters_;
+import com.dankeroni.dankbot.models.TwitchTags;
 import com.dankeroni.dankbot.models.Variable;
 import com.google.gson.Gson;
 
@@ -89,11 +90,11 @@ public class Utils {
         return Arrays.copyOfRange(messageWords, 1, messageWords.length);
     }
 
-    public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags) {
+    public static String format(String message, String sender, String senderMessage, TwitchTags tags) {
         return format(message, sender, senderMessage, tags, true);
     }
 
-    public static String format(String message, String sender, String senderMessage, HashMap<String, String> tags, boolean considerConfig) {
+    public static String format(String message, String sender, String senderMessage, TwitchTags tags, boolean considerConfig) {
         if (!message.contains("{") || !message.contains("}")) return message;
 
         String[] messageArgs = makeArgs(senderMessage);
@@ -106,7 +107,7 @@ public class Utils {
         }
 
         if (!argsConfigured) {
-            args.put("{sender}", (a, b, c) -> c.get("display-name"));
+            args.put("{sender}", (a, b, c) -> c.displayName);
             args.put("{realsender}", (a, b, c) -> b);
             args.put("{time}", Utils::time);
             args.put("{detailedtime}", Utils::detailedTime);
@@ -134,13 +135,13 @@ public class Utils {
                     value = null;
                 }
                 if (value != null && !value.trim().isEmpty()) message = message.replace(key, value);
-                else return tags.get("display-name") + ", invalid arguments";
+                else return tags.displayName + ", invalid arguments";
             }
         }
         return message;
     }
 
-    public static String time(String message, String sender, HashMap<String, String> tags) {
+    public static String time(String message, String sender, TwitchTags tags) {
         return time.format(new Date());
     }
 
@@ -148,7 +149,7 @@ public class Utils {
         return detailedTime(null, null, null);
     }
 
-    public static String detailedTime(String message, String sender, HashMap<String, String> tags) {
+    public static String detailedTime(String message, String sender, TwitchTags tags) {
         return detailedTime.format(new Date());
     }
 
@@ -160,11 +161,11 @@ public class Utils {
         return date(null, null, null);
     }
 
-    public static String date(String message, String sender, HashMap<String, String> tags) {
+    public static String date(String message, String sender, TwitchTags tags) {
         return date.format(new Date());
     }
 
-    public static String botUpTime(String message, String sender, HashMap<String, String> tags) {
+    public static String botUpTime(String message, String sender, TwitchTags tags) {
         long millis = System.currentTimeMillis() - bot.getTimeStarted();
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);

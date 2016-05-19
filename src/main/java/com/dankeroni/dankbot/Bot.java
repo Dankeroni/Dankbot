@@ -1,6 +1,7 @@
 package com.dankeroni.dankbot;
 
 import com.dankeroni.dankbot.json.twitch.tmi.servers.Servers;
+import com.dankeroni.dankbot.models.TwitchTags;
 import com.dankeroni.dankbot.modules.*;
 import com.google.gson.Gson;
 import org.fusesource.jansi.AnsiConsole;
@@ -185,12 +186,12 @@ public class Bot extends PircBot {
             sendMessage(channel, message + " ");
     }
 
-    public void formattedChannelMessage(String message, String sender, String senderMessage, HashMap<String, String> tags) {
+    public void formattedChannelMessage(String message, String sender, String senderMessage, TwitchTags tags) {
         this.channelMessage(Utils.format(message, sender, senderMessage, tags));
     }
 
     public void onMessageWithTags(String channel, String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        modules.onChannelMessage(message, sender, tags);
+        modules.onChannelMessage(message, sender, new TwitchTags(tags));
     }
 
     public void onUserstateWithTags(String channel, HashMap<String, String> tags) {
@@ -215,12 +216,12 @@ public class Bot extends PircBot {
             sendMessage("#dankeroni", ".w " + user.toLowerCase() + " " + message);
     }
 
-    public void formattedWhisperMessage(String message, String user, String senderMessage, HashMap<String, String> tags) {
+    public void formattedWhisperMessage(String message, String user, String senderMessage, TwitchTags tags) {
         this.whisperMessage(user, Utils.format(message, user, senderMessage, tags));
     }
 
     public void onWhisperWithTags(String sender, String login, String hostname, String message, HashMap<String, String> tags) {
-        modules.onWhisperMessage(message, sender, tags);
+        modules.onWhisperMessage(message, sender, new TwitchTags(tags));
     }
 
     public void ban(String user) {

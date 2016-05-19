@@ -5,9 +5,9 @@ import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random;
 
 public class Raffle extends Module {
@@ -23,7 +23,7 @@ public class Raffle extends Module {
         commands.addActionCommand(new ActionCommand("!join", this::join, AccessLevel.USER, 0, 2));
     }
 
-    public void startRaffle(String message, String sender, HashMap<String, String> tags) {
+    public void startRaffle(String message, String sender, TwitchTags tags) {
         if (raffleRunning) return;
 
         String[] messageArgs = Utils.makeArgs(message);
@@ -60,8 +60,8 @@ public class Raffle extends Module {
         }, sleepTime * 4);
     }
 
-    public void join(String message, String sender, HashMap<String, String> tags) {
+    public void join(String message, String sender, TwitchTags tags) {
         if (raffleRunning && !enteredUsers.contains(sender))
-            enteredUsers.add(tags.get("display-name"));
+            enteredUsers.add(tags.displayName);
     }
 }

@@ -6,6 +6,7 @@ import com.dankeroni.dankbot.LogLevel;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -65,11 +66,11 @@ public class Points extends Module {
         pointsList.put(user.toLowerCase(), this.getPoints(user) - points);
     }
 
-    public void userPoints(String message, String sender, HashMap<String, String> tags) {
-        bot.channelMessage(tags.get("display-name") + " has " + this.getPoints(sender) + " points");
+    public void userPoints(String message, String sender, TwitchTags tags) {
+        bot.channelMessage(tags.displayName + " has " + this.getPoints(sender) + " points");
     }
 
-    public void userPointsWhisper(String message, String sender, HashMap<String, String> tags) {
+    public void userPointsWhisper(String message, String sender, TwitchTags tags) {
         bot.whisperMessage(sender, "You have " + this.getPoints(sender) + " points");
     }
 

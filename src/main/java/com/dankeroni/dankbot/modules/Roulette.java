@@ -5,8 +5,8 @@ import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.models.ActionCommand;
 import com.dankeroni.dankbot.models.Module;
+import com.dankeroni.dankbot.models.TwitchTags;
 
-import java.util.HashMap;
 import java.util.Random;
 
 public class Roulette extends Module {
@@ -18,7 +18,7 @@ public class Roulette extends Module {
         commands.addActionCommand(new ActionCommand("!roulette", this::roulette, AccessLevel.USER, 15, 0));
     }
 
-    public void roulette(String message, String sender, HashMap<String, String> tags) {
+    public void roulette(String message, String sender, TwitchTags tags) {
         Points points = bot.getPoints();
         int bet;
         try {
@@ -27,7 +27,7 @@ public class Roulette extends Module {
             return;
         }
 
-        String displayName = tags.get("display-name");
+        String displayName = tags.displayName;
         int userPoints = points.getPoints(sender);
         if (userPoints < bet) {
             bot.channelMessage(displayName + " you don't have enough points FeelsBadMan");
