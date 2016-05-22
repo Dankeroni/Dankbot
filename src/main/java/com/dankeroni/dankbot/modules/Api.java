@@ -2,8 +2,8 @@ package com.dankeroni.dankbot.modules;
 
 import com.dankeroni.dankbot.Bot;
 import com.dankeroni.dankbot.LogLevel;
-import com.dankeroni.dankbot.Utils;
 import com.dankeroni.dankbot.json.dankbot.api.NotFoundError;
+import com.dankeroni.dankbot.models.JsonRoute;
 import com.dankeroni.dankbot.models.Module;
 import com.dankeroni.dankbot.models.User;
 import com.google.gson.Gson;
@@ -14,24 +14,21 @@ import java.util.HashMap;
 
 import static spark.Spark.get;
 import static spark.Spark.port;
-import static spark.route.RouteOverview.enableRouteOverview;
 
 public class Api extends Module {
 
     public Gson gson = new Gson();
 
-    public Route root = (request, response) -> "dankbot has been online for " + Utils.botUpTime(null, null, null),
-
-    users1 = (request, response) -> {
+    public JsonRoute users1 = (request, response) -> {
         HashMap<String, User> userHashMap = users.getUsers();
         if (!userHashMap.isEmpty()) {
             com.dankeroni.dankbot.json.dankbot.api.users.Users users = new com.dankeroni.dankbot.json.dankbot.api.users.Users();
             users.users = new ArrayList<>(userHashMap.values());
-            return gson.toJson(users);
+            return users;
         } else {
             NotFoundError notFoundError = new NotFoundError();
             notFoundError.message = "No users found";
-            return gson.toJson(notFoundError);
+            return notFoundError;
         }
     },
 
@@ -39,13 +36,12 @@ public class Api extends Module {
         String user = request.params(":user");
         if (users.userExists(user)) {
             User user1 = users.getUser(user);
-            return gson.toJson(new com.dankeroni.dankbot.json.dankbot.api.users.user.User(
-                user1.name, user1.displayName, user1.points, user1.timeOffline, user1.timeOnline, user1.accessLevel
-            ));
+            return new com.dankeroni.dankbot.json.dankbot.api.users.user.User(
+                user1.name, user1.displayName, user1.points, user1.timeOffline, user1.timeOnline, user1.accessLevel);
         } else {
             NotFoundError notFoundError = new NotFoundError();
             notFoundError.message = "User not found";
-            return gson.toJson(notFoundError);
+            return notFoundError;
         }
     },
 
@@ -59,11 +55,11 @@ public class Api extends Module {
                 user.points = entry.getValue();
                 points1.users.add(user);
             }
-            return gson.toJson(points1);
+            return points1;
         } else {
             NotFoundError notFoundError = new NotFoundError();
             notFoundError.message = "No users found";
-            return gson.toJson(notFoundError);
+            return notFoundError;
         }
     },
 
@@ -71,11 +67,11 @@ public class Api extends Module {
         HashMap<String, Integer> pointsList = bot.points.getPointsList();
         String user = request.params(":user").toLowerCase();
         if (pointsList.containsKey(user)) {
-            return gson.toJson(new com.dankeroni.dankbot.json.dankbot.api.points.user.User(user, pointsList.get(user)));
+            return new com.dankeroni.dankbot.json.dankbot.api.points.user.User(user, pointsList.get(user));
         } else {
             NotFoundError notFoundError = new NotFoundError();
             notFoundError.message = "User not found";
-            return gson.toJson(notFoundError);
+            return notFoundError;
         }
     };
 
@@ -84,11 +80,13 @@ public class Api extends Module {
 
         bot.log("Starting api", LogLevel.INFO);
         port(80);
-        enableRouteOverview();
-        get("/", root);
-        get("/api/users/:user", usersUser);
-        get("/api/users", users1);
-        get("/api/points", points);
-        get("/api/points/:user", pointsUser);
+        getJson("/api/users/:user", usersUser);
+        getJson("/api/users", users1);
+        getJson("/api/points", points);
+        getJson("/api/points/:user", pointsUser);
+    }
+
+    public void getJson(String path, Route route) {
+        get(path, route, gson::toJson);
     }
 }
